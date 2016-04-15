@@ -67,7 +67,7 @@ public class ResourceManager {
 
     private BuildableBitmapTextureAtlas mainMenuTextureAtlas;
     private BitmapTextureAtlas mSubmenuTextureAtlas;
-    public ITextureRegion buttonLevelTextureRegion;
+    public ITextureRegion buttonEasyLevelTextureRegion;
     public ITextureRegion buttonMediumLevelTextureRegion;
     public ITextureRegion buttonHardLevelTextureRegion;
     public ITextureRegion buttonProLevelTextureRegion;
@@ -146,14 +146,14 @@ public class ResourceManager {
         mainMenuTextureAtlas = new BuildableBitmapTextureAtlas(mActivity.getTextureManager(),
                 1024, 1024, BitmapTextureFormat.RGBA_8888,
                 TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        buttonLevelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
-                mainMenuTextureAtlas, mActivity.getAssets(), "level.png");
+        buttonEasyLevelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
+                mainMenuTextureAtlas, mActivity.getAssets(), "level1.png");
         buttonMediumLevelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
-                mainMenuTextureAtlas, mActivity.getAssets(), "medium.png");
+                mainMenuTextureAtlas, mActivity.getAssets(), "level2.png");
         buttonHardLevelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
-                mainMenuTextureAtlas, mActivity.getAssets(), "hard.png");
+                mainMenuTextureAtlas, mActivity.getAssets(), "level3.png");
         buttonProLevelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
-                mainMenuTextureAtlas, mActivity.getAssets(), "pro.png");
+                mainMenuTextureAtlas, mActivity.getAssets(), "level4.png");
 
         mSubmenuTextureAtlas = new BitmapTextureAtlas(mActivity.getTextureManager(), 512, 512, TextureOptions.BILINEAR);
         musicTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mSubmenuTextureAtlas, mActivity, "sound.png", 0, 0, 2, 1);
@@ -178,7 +178,7 @@ public class ResourceManager {
 
     public void unloadMainManuResources(){
         mainMenuTextureAtlas.unload();
-        buttonLevelTextureRegion = null;
+        buttonEasyLevelTextureRegion = null;
         buttonMediumLevelTextureRegion = null;
         buttonHardLevelTextureRegion = null;
         buttonProLevelTextureRegion = null;
