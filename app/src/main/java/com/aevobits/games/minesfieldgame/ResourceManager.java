@@ -43,9 +43,6 @@ public class ResourceManager {
     public float startClick;
     public float endClick;
 
-    private BitmapTextureAtlas mSplashTextureAtlas;
-    public ITextureRegion mSplashTextureRegion;
-
     public ITextureRegion tileTextureRegion;
     public ITextureRegion emptyTileTextureRegion;
     public ITextureRegion oneTileTextureRegion;
@@ -77,17 +74,14 @@ public class ResourceManager {
     public ITexture fontStroke;
 
     private BuildableBitmapTextureAtlas mSubBitmapTextureAtlas;
-    public TiledTextureRegion mStateTextureRegion;
-    public TiledTextureRegion mButtonTextureRegion;
-    public ITextureRegion lostTextureRegion;
+    public ITextureRegion gameOverTextTextureRegion;
+    public ITextureRegion gameOverYesTextureRegion;
+    public ITextureRegion gameOverNoTextureRegion;
     public ITextureRegion mPlayTextureRegion;
-    public ITextureRegion mMenuTextureRegion;
 
     private ITexture fontTexture;
 
     public Font coolvetica;
-    public Font calculator;
-    public Font edmunds;
     public Font candy_shop;
     public Font candy_shop_min;
 
@@ -229,7 +223,7 @@ public class ResourceManager {
         replayTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
                 gameTextureAtlas, mActivity.getAssets(), "replay.png");
 
-        mSubBitmapTextureAtlas = new BuildableBitmapTextureAtlas(mActivity.getTextureManager(), 600, 600, TextureOptions.BILINEAR);
+        mSubBitmapTextureAtlas = new BuildableBitmapTextureAtlas(mActivity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);
         /*
         mStateTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(
                 mSubBitmapTextureAtlas, mActivity, "ready_over.png", 0, 0, 2, 1);
@@ -238,10 +232,12 @@ public class ResourceManager {
         */
         mPlayTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
                 mSubBitmapTextureAtlas, mActivity.getAssets(), "play.png");
-        mMenuTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
-                mSubBitmapTextureAtlas, mActivity.getAssets(), "menu.png");
-        lostTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
-                mSubBitmapTextureAtlas, mActivity.getAssets(), "lost.png");
+        gameOverTextTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
+                mSubBitmapTextureAtlas, mActivity.getAssets(), "gameOverText.png");
+        gameOverYesTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
+                mSubBitmapTextureAtlas, mActivity.getAssets(), "gameOverYes.png");
+        gameOverNoTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
+                mSubBitmapTextureAtlas, mActivity.getAssets(), "gameOverNo.png");
 
 /*
         calculator = FontFactory.createFromAsset(mActivity.getFontManager(), mActivity.getTextureManager(), 256, 256,

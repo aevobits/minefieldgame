@@ -118,6 +118,7 @@ public class GameScene extends BaseScene {
 
         //create CameraScene for game over
         mGameOverScene = new CameraScene(mResourceManager.camera);
+        mGameOverScene.setBackgroundEnabled(false);
         Rectangle backgroundGameOver = new Rectangle(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2,SCREEN_WIDTH, SCREEN_HEIGHT, mResourceManager.vbom);
         backgroundGameOver.setColor(Color.WHITE);
         backgroundGameOver.setAlpha(0.5f);
@@ -139,20 +140,37 @@ public class GameScene extends BaseScene {
         mTimerHudText.setText("00:00");
         attachChild(mTimerHudText);
 
-        final Sprite lostSprite = new Sprite(overX, overY,200, 198, mResourceManager.lostTextureRegion, mResourceManager.vbom) {
+        final Sprite gameOverTextSprite = new Sprite(overX, overY,300, 300, mResourceManager.gameOverTextTextureRegion, mResourceManager.vbom);
+        mGameOverScene.attachChild(gameOverTextSprite);
+/*
+        final Sprite gameOverYesSprite = new Sprite(overX, overY,200, 198, mResourceManager.gameOverYesTextureRegion, mResourceManager.vbom) {
 
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 if (pSceneTouchEvent.isActionUp()) {
+                    mResourceManager.mActivity.stopSound(mResourceManager.soundExplosion);
                     backToMenu();
                 }
                 return true;
             }
         };
-        mGameOverScene.registerTouchArea(lostSprite);
-        mGameOverScene.attachChild(lostSprite);
-        mGameOverScene.setBackgroundEnabled(false);
+        mGameOverScene.registerTouchArea(gameOverYesSprite);
+        mGameOverScene.attachChild(gameOverYesSprite);
 
+        final Sprite gameOverNoSprite = new Sprite(overX, overY,200, 198, mResourceManager.gameOverNoTextureRegion, mResourceManager.vbom) {
+
+            @Override
+            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+                if (pSceneTouchEvent.isActionUp()) {
+                    mResourceManager.mActivity.stopSound(mResourceManager.soundExplosion);
+                    backToMenu();
+                }
+                return true;
+            }
+        };
+        mGameOverScene.registerTouchArea(gameOverNoSprite);
+        mGameOverScene.attachChild(gameOverNoSprite);
+ */
         Sprite homeSprite = new Sprite(82f, 50f,84, 84, mResourceManager.homeTextureRegion, mResourceManager.vbom){
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
