@@ -84,17 +84,18 @@ public class Tile extends Sprite{
                         if(mapManager.hasWon()){
                             mapManager.setGameOver(true);
                             mapManager.setWin(true);
-                            int newScore = secondsToScore(mapManager.seconds);
-                            if(newScore>mResourceManager.mActivity.getHiscore()){
-                                mResourceManager.mActivity.setHiScore(newScore);
-                                if(mActivity.getGameHelper().isSignedIn())
-                                    Games.Leaderboards.submitScoreImmediate(mActivity.getApiClient(), "CgkIoq7_rKsbEAIQAQ", newScore);
+                            mapManager.newScore = secondsToScore(mapManager.seconds);
+                            if(mapManager.newScore>mResourceManager.mActivity.getHiscore()){
+                                mResourceManager.mActivity.setHiScore(mapManager.newScore);
+                                //if(mActivity.getGameHelper().isSignedIn())
+                                //    Games.Leaderboards.submitScoreImmediate(mActivity.getApiClient(), "CgkIoq7_rKsbEAIQAQ", mapManager.newScore);
                             }
                         }
                     } else {
                         //mapManager.switchBomb(row, col, x, y, this.pWidth, this.pHeight);
                         mapManager.switchBombs(this.pWidth, this.pHeight);
                         mResourceManager.mActivity.playSound(mResourceManager.soundExplosion);
+                        mapManager.newScore = secondsToScore(mapManager.seconds);
                         mapManager.setGameOver(true);
                         mapManager.setWin(false);
                     }
@@ -124,11 +125,11 @@ public class Tile extends Sprite{
                     if (mapManager.hasWon()) {
                         mapManager.setGameOver(true);
                         mapManager.setWin(true);
-                        int newScore = secondsToScore(mapManager.seconds);
-                        if (newScore > mResourceManager.mActivity.getHiscore()) {
-                            mResourceManager.mActivity.setHiScore(newScore);
-                            if(mActivity.getGameHelper().isSignedIn())
-                                Games.Leaderboards.submitScoreImmediate(mActivity.getApiClient(), "CgkIoq7_rKsbEAIQAQ", newScore);
+                        mapManager.newScore = secondsToScore(mapManager.seconds);
+                        if (mapManager.newScore > mResourceManager.mActivity.getHiscore()) {
+                            mResourceManager.mActivity.setHiScore(mapManager.newScore);
+                            //if(mActivity.getGameHelper().isSignedIn())
+                            //    Games.Leaderboards.submitScoreImmediate(mActivity.getApiClient(), "CgkIoq7_rKsbEAIQAQ", mapManager.newScore);
                         }
                     }
 

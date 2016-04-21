@@ -81,7 +81,7 @@ public class ResourceManager {
 
     private ITexture fontTexture;
 
-    public Font coolvetica;
+    public Font montserrat;
     public Font candy_shop;
     public Font candy_shop_min;
 
@@ -164,10 +164,15 @@ public class ResourceManager {
             throw  new RuntimeException("Error while loading main menu textures", e);
         }
 
-        fontStroke = new BitmapTextureAtlas(mActivity.getTextureManager(), 256, 256, TextureOptions.BILINEAR);
+        //fontStroke = new BitmapTextureAtlas(mActivity.getTextureManager(), 256, 256, TextureOptions.BILINEAR);
 
-        coolvetica = FontFactory.createStrokeFromAsset(mActivity.getFontManager(), fontStroke, mActivity.getAssets(), "coolvetica.ttf", 36, true, Color.WHITE_ARGB_PACKED_INT, 1, Color.BLACK_ARGB_PACKED_INT);
-        coolvetica.load();
+        fontTexture = new BitmapTextureAtlas(mActivity.getTextureManager(), 256, 256, TextureOptions.REPEATING_BILINEAR_PREMULTIPLYALPHA);
+
+        montserrat = FontFactory.createFromAsset(mActivity.getFontManager(), fontTexture,
+                mActivity.getAssets(), "Montserrat-Regular.ttf", 36, true, Color.WHITE_ARGB_PACKED_INT);
+
+        //montserrat = FontFactory.createStrokeFromAsset(mActivity.getFontManager(), fontStroke, mActivity.getAssets(), "Montserrat-Regular.ttf", 36, true, Color.WHITE_ARGB_PACKED_INT, 1, Color.BLACK_ARGB_PACKED_INT);
+        montserrat.load();
     }
 
     public void unloadMainManuResources(){
@@ -179,8 +184,8 @@ public class ResourceManager {
         musicTextureRegion = null;
         rankingTextureRegion = null;
         rewardsTextureRegion = null;
-        coolvetica.unload();
-        coolvetica = null;
+        //montserrat.unload();
+        //montserrat = null;
     }
 
     public void loadGameResources(){
@@ -244,9 +249,11 @@ public class ResourceManager {
                 TextureOptions.DEFAULT, mActivity.getAssets(), "calculator.ttf", 36, true, Color.BLACK_ABGR_PACKED_INT);
         calculator.load();
 */
+/*
         coolvetica = FontFactory.createFromAsset(mActivity.getFontManager(), mActivity.getTextureManager(), 256, 256,
                 TextureOptions.DEFAULT, mActivity.getAssets(), "coolvetica.ttf", 36, true, Color.BLACK_ABGR_PACKED_INT);
         coolvetica.load();
+*/
         try {
             gameTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(2, 0, 2));
             gameTextureAtlas.load();

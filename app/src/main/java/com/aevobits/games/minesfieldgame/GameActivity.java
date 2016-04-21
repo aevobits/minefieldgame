@@ -18,13 +18,14 @@ import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.FillResolutionPolicy;
 import org.andengine.engine.options.resolutionpolicy.IResolutionPolicy;
 import org.andengine.entity.scene.Scene;
+import org.andengine.ui.activity.BaseGameActivity;
 
 import java.io.IOException;
 
 /**
  * Created by vito on 29/02/16.
  */
-public class GameActivity extends MineFieldBaseGameActivity {
+public class GameActivity extends BaseGameActivity{//MineFieldBaseGameActivity {
 
     private static final String TAG = "GameActivity";
 
@@ -136,7 +137,7 @@ public class GameActivity extends MineFieldBaseGameActivity {
             }
         }
     };
-
+/*
     @Override
     public void onSignInFailed() {
 
@@ -146,5 +147,5 @@ public class GameActivity extends MineFieldBaseGameActivity {
     public void onSignInSucceeded() {
 
     }
-
+*/
 }

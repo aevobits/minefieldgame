@@ -27,6 +27,7 @@ public class MapManager {
     public int flagsBombs;
     public Text mBombsHudText;
     public int seconds;
+    public int newScore;
     private boolean gameOver = false;
     private boolean win;
 
@@ -47,6 +48,7 @@ public class MapManager {
         this.pYInit = pYInit;
         this.flagsBombs = bombs;
         this.seconds = 0;
+        this.newScore = 0;
 
         generateMap();
     }

@@ -121,35 +121,46 @@ public class GameScene extends BaseScene {
         mGameOverScene.setBackgroundEnabled(false);
         Rectangle backgroundGameOver = new Rectangle(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2,SCREEN_WIDTH, SCREEN_HEIGHT, mResourceManager.vbom);
         backgroundGameOver.setColor(Color.WHITE);
-        backgroundGameOver.setAlpha(0.5f);
+        backgroundGameOver.setAlpha(0.3f);
         mGameOverScene.attachChild(backgroundGameOver);
 
         final float overX = SCREEN_WIDTH / 2;
         final float overY = SCREEN_HEIGHT / 2;
 
-        Sprite bombsSprite = new Sprite(82, SCREEN_HEIGHT-50f,84, 84, mResourceManager.bombsTileTextureRegion, mResourceManager.vbom);
+        Sprite bombsSprite = new Sprite(82, SCREEN_HEIGHT-50f,128, 64, mResourceManager.bombsTileTextureRegion, mResourceManager.vbom);
         attachChild(bombsSprite);
 
-        mapManager.mBombsHudText = new Text(150f, SCREEN_HEIGHT-50f, mResourceManager.candy_shop_min, "0123456789", new TextOptions(HorizontalAlign.LEFT), mResourceManager.vbom);
+        mapManager.mBombsHudText = new Text(110f, SCREEN_HEIGHT-50f, mResourceManager.montserrat, "0123456789", new TextOptions(HorizontalAlign.LEFT), mResourceManager.vbom);
         mapManager.mBombsHudText.setText(String.valueOf(mapManager.flagsBombs));
         attachChild(mapManager.mBombsHudText);
 
-        Sprite timerSprite = new Sprite(SCREEN_WIDTH - 185f, SCREEN_HEIGHT-50f,84, 84, mResourceManager.timerGameTileTextureRegion, mResourceManager.vbom);
+        Sprite timerSprite = new Sprite(SCREEN_WIDTH - 110f, SCREEN_HEIGHT-50f,178, 64, mResourceManager.timerGameTileTextureRegion, mResourceManager.vbom);
         attachChild(timerSprite);
-        mTimerHudText = new Text(SCREEN_WIDTH - 80f, SCREEN_HEIGHT-50f, mResourceManager.candy_shop_min, "0123456789", new TextOptions(HorizontalAlign.LEFT), mResourceManager.vbom);
+        mTimerHudText = new Text(SCREEN_WIDTH - 80f, SCREEN_HEIGHT-50f, mResourceManager.montserrat, "0123456789", new TextOptions(HorizontalAlign.LEFT), mResourceManager.vbom);
         mTimerHudText.setText("00:00");
         attachChild(mTimerHudText);
 
-        final Sprite gameOverTextSprite = new Sprite(overX, overY,300, 300, mResourceManager.gameOverTextTextureRegion, mResourceManager.vbom);
+        final Sprite gameOverTextSprite = new Sprite(overX, overY,350, 250, mResourceManager.gameOverTextTextureRegion, mResourceManager.vbom);
         mGameOverScene.attachChild(gameOverTextSprite);
-/*
-        final Sprite gameOverYesSprite = new Sprite(overX, overY,200, 198, mResourceManager.gameOverYesTextureRegion, mResourceManager.vbom) {
+
+
+        final Text gameOverTextScore = new Text(overX, overY + 50, mResourceManager.montserrat, "", new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
+        gameOverTextScore.setScale(0.8f);
+        gameOverTextScore.setColor(Color.BLACK);
+        mGameOverScene.attachChild(gameOverTextScore);
+
+        Text gameOverTextQuestion = new Text(overX, overY - 50, mResourceManager.montserrat, "Vuoi giocare di nuovo?", new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
+        gameOverTextQuestion.setScale(0.8f);
+        gameOverTextQuestion.setColor(Color.BLACK);
+        mGameOverScene.attachChild(gameOverTextQuestion);
+
+        final Sprite gameOverYesSprite = new Sprite(overX - (gameOverTextSprite.getWidth()/4), overY - (gameOverTextSprite.getHeight()/2),130, 80, mResourceManager.gameOverYesTextureRegion, mResourceManager.vbom) {
 
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 if (pSceneTouchEvent.isActionUp()) {
                     mResourceManager.mActivity.stopSound(mResourceManager.soundExplosion);
-                    backToMenu();
+                    restartGame();
                 }
                 return true;
             }
@@ -157,7 +168,11 @@ public class GameScene extends BaseScene {
         mGameOverScene.registerTouchArea(gameOverYesSprite);
         mGameOverScene.attachChild(gameOverYesSprite);
 
-        final Sprite gameOverNoSprite = new Sprite(overX, overY,200, 198, mResourceManager.gameOverNoTextureRegion, mResourceManager.vbom) {
+        Text gameOverYesText = new Text(overX - (gameOverTextSprite.getWidth()/4), overY - (gameOverTextSprite.getHeight()/2), mResourceManager.montserrat, "SI", new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
+        //textLevel4.setScale(1.35f);
+        mGameOverScene.attachChild(gameOverYesText);
+
+        final Sprite gameOverNoSprite = new Sprite(overX + (gameOverTextSprite.getWidth()/4), overY - (gameOverTextSprite.getHeight()/2),130, 80, mResourceManager.gameOverNoTextureRegion, mResourceManager.vbom) {
 
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
@@ -170,8 +185,12 @@ public class GameScene extends BaseScene {
         };
         mGameOverScene.registerTouchArea(gameOverNoSprite);
         mGameOverScene.attachChild(gameOverNoSprite);
- */
-        Sprite homeSprite = new Sprite(82f, 50f,84, 84, mResourceManager.homeTextureRegion, mResourceManager.vbom){
+
+        Text gameOverNoText = new Text(overX + (gameOverTextSprite.getWidth()/4), overY - (gameOverTextSprite.getHeight()/2), mResourceManager.montserrat, "NO", new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
+        //textLevel4.setScale(1.35f);
+        mGameOverScene.attachChild(gameOverNoText);
+
+        Sprite homeSprite = new Sprite(82f, 50f,64, 64, mResourceManager.homeTextureRegion, mResourceManager.vbom){
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 if (pSceneTouchEvent.isActionUp()) {
@@ -183,7 +202,7 @@ public class GameScene extends BaseScene {
         attachChild(homeSprite);
         registerTouchArea(homeSprite);
 
-        Sprite replayArrowSprite = new Sprite((SCREEN_WIDTH)-82f, 50f,84, 84, mResourceManager.replayTextureRegion, mResourceManager.vbom){
+        Sprite replayArrowSprite = new Sprite((SCREEN_WIDTH)-82f, 50f,64, 64, mResourceManager.replayTextureRegion, mResourceManager.vbom){
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 if (pSceneTouchEvent.isActionUp()) {
@@ -202,6 +221,8 @@ public class GameScene extends BaseScene {
             public void onUpdate(float pSecondsElapsed) {
 
                 if(mapManager.getGameOver() && (!mapManager.isWin())){
+                    String gameOverScore = "Il tuo punteggio è:" + mapManager.newScore;
+                    gameOverTextScore.setText(gameOverScore);
                     setChildScene(mGameOverScene, false, true, true);
                 }
                 if(mapManager.getGameOver() && (mapManager.isWin())){
