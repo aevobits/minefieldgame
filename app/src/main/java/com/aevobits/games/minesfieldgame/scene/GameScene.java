@@ -120,8 +120,8 @@ public class GameScene extends BaseScene {
         mGameOverScene = new CameraScene(mResourceManager.camera);
         mGameOverScene.setBackgroundEnabled(false);
         Rectangle backgroundGameOver = new Rectangle(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2,SCREEN_WIDTH, SCREEN_HEIGHT, mResourceManager.vbom);
-        backgroundGameOver.setColor(Color.WHITE);
-        backgroundGameOver.setAlpha(0.3f);
+        backgroundGameOver.setColor(new Color(0.004901961f, 0.004901961f, 0.004901961f));
+        backgroundGameOver.setAlpha(0.5f);
         mGameOverScene.attachChild(backgroundGameOver);
 
         final float overX = SCREEN_WIDTH / 2;
@@ -143,10 +143,15 @@ public class GameScene extends BaseScene {
         final Sprite gameOverTextSprite = new Sprite(overX, overY,350, 250, mResourceManager.gameOverTextTextureRegion, mResourceManager.vbom);
         mGameOverScene.attachChild(gameOverTextSprite);
 
+        final Text gameOverText = new Text(overX, overY + 50, mResourceManager.montserrat, "Hai Vinto!/Hai Perso!", new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
+        gameOverText.setScale(1.3f);
+        gameOverText.setColor(Color.BLACK);
+        mGameOverScene.attachChild(gameOverText);
 
-        final Text gameOverTextScore = new Text(overX, overY + 50, mResourceManager.montserrat, "", new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
+        final Text gameOverTextScore = new Text(overX, overY, mResourceManager.montserrat, "Il tuo punteggio è: ", new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
         gameOverTextScore.setScale(0.8f);
         gameOverTextScore.setColor(Color.BLACK);
+        gameOverTextScore.setVisible(false);
         mGameOverScene.attachChild(gameOverTextScore);
 
         Text gameOverTextQuestion = new Text(overX, overY - 50, mResourceManager.montserrat, "Vuoi giocare di nuovo?", new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
@@ -169,7 +174,6 @@ public class GameScene extends BaseScene {
         mGameOverScene.attachChild(gameOverYesSprite);
 
         Text gameOverYesText = new Text(overX - (gameOverTextSprite.getWidth()/4), overY - (gameOverTextSprite.getHeight()/2), mResourceManager.montserrat, "SI", new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
-        //textLevel4.setScale(1.35f);
         mGameOverScene.attachChild(gameOverYesText);
 
         final Sprite gameOverNoSprite = new Sprite(overX + (gameOverTextSprite.getWidth()/4), overY - (gameOverTextSprite.getHeight()/2),130, 80, mResourceManager.gameOverNoTextureRegion, mResourceManager.vbom) {
@@ -187,7 +191,6 @@ public class GameScene extends BaseScene {
         mGameOverScene.attachChild(gameOverNoSprite);
 
         Text gameOverNoText = new Text(overX + (gameOverTextSprite.getWidth()/4), overY - (gameOverTextSprite.getHeight()/2), mResourceManager.montserrat, "NO", new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
-        //textLevel4.setScale(1.35f);
         mGameOverScene.attachChild(gameOverNoText);
 
         Sprite homeSprite = new Sprite(82f, 50f,64, 64, mResourceManager.homeTextureRegion, mResourceManager.vbom){
@@ -201,6 +204,20 @@ public class GameScene extends BaseScene {
         };
         attachChild(homeSprite);
         registerTouchArea(homeSprite);
+
+        Sprite bestScoreSprite = new Sprite(SCREEN_WIDTH / 2, 65f,160, 96, mResourceManager.bestScoreTextureRegion, mResourceManager.vbom);
+        attachChild(bestScoreSprite);
+
+        Text bestScoreText = new Text(SCREEN_WIDTH / 2, 85f, mResourceManager.montserrat, "BEST", new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
+        bestScoreText.setScale(1.1f);
+        bestScoreText.setColor(Color.BLACK);
+        attachChild(bestScoreText);
+
+        String bestScoreString = "" + mResourceManager.mActivity.getHiscore();
+        Text bestScore = new Text(SCREEN_WIDTH / 2, 45f, mResourceManager.montserrat, bestScoreString, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
+        bestScore.setScale(0.9f);
+        bestScore.setColor(Color.BLACK);
+        attachChild(bestScore);
 
         Sprite replayArrowSprite = new Sprite((SCREEN_WIDTH)-82f, 50f,64, 64, mResourceManager.replayTextureRegion, mResourceManager.vbom){
             @Override
@@ -221,11 +238,16 @@ public class GameScene extends BaseScene {
             public void onUpdate(float pSecondsElapsed) {
 
                 if(mapManager.getGameOver() && (!mapManager.isWin())){
-                    String gameOverScore = "Il tuo punteggio è:" + mapManager.newScore;
-                    gameOverTextScore.setText(gameOverScore);
+                    String text = "Hai Perso!";
+                    gameOverText.setText(text);
                     setChildScene(mGameOverScene, false, true, true);
                 }
                 if(mapManager.getGameOver() && (mapManager.isWin())){
+                    String text = "Hai Vinto!";
+                    gameOverText.setText(text);
+                    String gameOverScore = "Il tuo punteggio è: " + mapManager.newScore;
+                    gameOverTextScore.setText(gameOverScore);
+                    gameOverTextScore.setVisible(true);
                     setChildScene(mGameOverScene, false, true, true);
                 }
             }

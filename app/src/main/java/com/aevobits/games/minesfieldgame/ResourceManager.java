@@ -64,6 +64,7 @@ public class ResourceManager {
 
     private BuildableBitmapTextureAtlas mainMenuTextureAtlas;
     private BitmapTextureAtlas mSubmenuTextureAtlas;
+    public ITextureRegion buttonLevelTextureRegion;
     public ITextureRegion buttonEasyLevelTextureRegion;
     public ITextureRegion buttonMediumLevelTextureRegion;
     public ITextureRegion buttonHardLevelTextureRegion;
@@ -140,6 +141,8 @@ public class ResourceManager {
         mainMenuTextureAtlas = new BuildableBitmapTextureAtlas(mActivity.getTextureManager(),
                 1024, 1024, BitmapTextureFormat.RGBA_8888,
                 TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        buttonLevelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
+                mainMenuTextureAtlas, mActivity.getAssets(), "level.png");
         buttonEasyLevelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
                 mainMenuTextureAtlas, mActivity.getAssets(), "level1.png");
         buttonMediumLevelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
@@ -224,7 +227,7 @@ public class ResourceManager {
         homeTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
                 gameTextureAtlas, mActivity.getAssets(), "home.png");
         bestScoreTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
-                gameTextureAtlas, mActivity.getAssets(), "best_score.png");
+                gameTextureAtlas, mActivity.getAssets(), "bestScore.png");
         replayTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
                 gameTextureAtlas, mActivity.getAssets(), "replay.png");
 

@@ -35,7 +35,7 @@ public class MainMenuScene extends BaseScene {
         textTitle.setScale(1.9f);
         attachChild(textTitle);
 
-        ButtonLevel buttonEasyLevel = new ButtonLevel(pX, pY, 1,330, 70, mResourceManager.buttonEasyLevelTextureRegion, mResourceManager.vbom ){
+        ButtonLevel buttonEasyLevel = new ButtonLevel(pX, pY, 1,330, 70, mResourceManager.buttonLevelTextureRegion, mResourceManager.vbom ){
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 switch (pSceneTouchEvent.getAction()) {
@@ -63,7 +63,7 @@ public class MainMenuScene extends BaseScene {
 
         pY = pY - 80;
 
-        ButtonLevel buttonMediumLevel = new ButtonLevel(pX, pY, 2,330, 70, mResourceManager.buttonMediumLevelTextureRegion, mResourceManager.vbom ){
+        ButtonLevel buttonMediumLevel = new ButtonLevel(pX, pY, 2,330, 70, mResourceManager.buttonLevelTextureRegion, mResourceManager.vbom ){
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 switch (pSceneTouchEvent.getAction()) {
@@ -90,7 +90,7 @@ public class MainMenuScene extends BaseScene {
 
         pY = pY - 80;
 
-        ButtonLevel buttonHardLevel = new ButtonLevel(pX, pY, 3,330, 70, mResourceManager.buttonHardLevelTextureRegion, mResourceManager.vbom ){
+        ButtonLevel buttonHardLevel = new ButtonLevel(pX, pY, 3,330, 70, mResourceManager.buttonLevelTextureRegion, mResourceManager.vbom ){
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 switch (pSceneTouchEvent.getAction()) {
@@ -118,7 +118,7 @@ public class MainMenuScene extends BaseScene {
 
         pY = pY - 80;
 
-        ButtonLevel buttonProLevel = new ButtonLevel(pX, pY, 4,330, 70, mResourceManager.buttonProLevelTextureRegion, mResourceManager.vbom ){
+        ButtonLevel buttonProLevel = new ButtonLevel(pX, pY, 4,330, 70, mResourceManager.buttonLevelTextureRegion, mResourceManager.vbom ){
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 switch (pSceneTouchEvent.getAction()) {
