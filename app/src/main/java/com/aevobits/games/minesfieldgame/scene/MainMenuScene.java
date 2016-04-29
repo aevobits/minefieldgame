@@ -1,5 +1,7 @@
 package com.aevobits.games.minesfieldgame.scene;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 
 import com.aevobits.games.minesfieldgame.R;
@@ -207,10 +209,24 @@ public class MainMenuScene extends BaseScene {
         attachChild(rewards);
         registerTouchArea(rewards);
 
+        fadeIn();
+
     }
 
     @Override
     public void onBackKeyPressed() {
+
+            new AlertDialog.Builder(mActivity)
+                    .setTitle("Really Exit?")
+                    .setMessage("Are you sure you want to exit?")
+                    .setNegativeButton(android.R.string.no, null)
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            System.exit(0);
+                        }
+                    }).create().show();
+
 
     }
 
@@ -222,5 +238,15 @@ public class MainMenuScene extends BaseScene {
     @Override
     public void disposeScene() {
 
+        new AlertDialog.Builder(mActivity)
+                .setTitle("Really Exit?")
+                .setMessage("Are you sure you want to exit?")
+                .setNegativeButton(android.R.string.no, null)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        System.exit(0);
+                    }
+                }).create().show();
     }
 }

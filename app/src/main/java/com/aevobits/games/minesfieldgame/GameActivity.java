@@ -1,5 +1,7 @@
 package com.aevobits.games.minesfieldgame;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
@@ -148,4 +150,33 @@ public class GameActivity extends BaseGameActivity{//MineFieldBaseGameActivity {
 
     }
 */
+
+    @Override
+    public void onBackPressed() {
+        if(((BaseScene)this.getEngine().getScene()).getSceneType() == SceneManager.SceneType.SCENE_GAME){
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.quitTitle)
+                    .setMessage(R.string.quitTxt)
+                    .setNegativeButton(R.string.no, null)
+                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            finish();
+                        }
+                    }).create().show();
+        }else if(((BaseScene)this.getEngine().getScene()).getSceneType() == SceneManager.SceneType.SCENE_MENU){
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.exitTitle)
+                    .setMessage(R.string.exitTxt)
+                    .setNegativeButton(R.string.no, null)
+                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            finish();
+                        }
+                    }).create().show();
+        }
+        ((BaseScene)this.getEngine().getScene()).disposeScene();
+
+    }
 }

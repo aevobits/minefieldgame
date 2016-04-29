@@ -17,10 +17,12 @@
     <string name="scoreTxt">High score: %1$d seconds</string>
     <string name="playedTxt">You played %1$d times</string>
 
-    <string name="quitTitle">Are you sure ?</string>
-    <string name="quitTxt">Are you sure that you want to leave the game ?</string>
-    <string name="quit">Leave</string>
-    <string name="back">Back</string>
+    <string name="quitTitle">Are you sure?</string>
+    <string name="quitTxt">Are you sure you want to leave the game?</string>
+    <string name="exitTitle">Are you sure?</string>
+    <string name="exitTxt">Are you sure you want to exit?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
     <string name="ad">Ad enabled</string>
     <string name="sign_in_failed">Failed to sign in. Please check your network connection and try again.</string>
     <string name="app_misconfigured">The application is incorrectly configured. Check that the package name and signing certificate match the client ID created in Developer Console. Also, if the application is not yet published, check that the account you are trying to sign in with is listed as a tester account. See logs for more information.</string>

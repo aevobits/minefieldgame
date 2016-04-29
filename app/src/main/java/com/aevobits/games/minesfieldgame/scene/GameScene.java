@@ -19,6 +19,12 @@ import org.andengine.engine.camera.hud.HUD;
 import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
+import org.andengine.entity.modifier.FadeInModifier;
+import org.andengine.entity.modifier.FadeOutModifier;
+import org.andengine.entity.modifier.IEntityModifier;
+import org.andengine.entity.modifier.ParallelEntityModifier;
+import org.andengine.entity.modifier.ScaleModifier;
+import org.andengine.entity.modifier.SequenceEntityModifier;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.CameraScene;
 import org.andengine.entity.scene.IOnSceneTouchListener;
@@ -47,7 +53,7 @@ public class GameScene extends BaseScene {
     private int bombs = 20;
     private Text mTimerHudText;
 
-    private CameraScene mGameOverScene;
+    private GameOverScene gameOverScene;
 
     private TimerHandler timer;
     private IUpdateHandler gameUpdateHandler;
@@ -77,6 +83,8 @@ public class GameScene extends BaseScene {
 
         createBackground();
         createField();
+        gameOverScene = new GameOverScene(this);
+        fadeIn();
     }
 
     private void createBackground(){
@@ -96,10 +104,10 @@ public class GameScene extends BaseScene {
                 mInitialY - (tileDimension * (this.rows * 0.5f) - tileDimension * 0.5f),
                 (tileDimension * this.cols) + 10f, (tileDimension * this.rows) + 10f, mResourceManager.vbom);
         rectangle.setColor(Color.WHITE);
-        this.attachChild(rectangle);
+        attachChild(rectangle);
 
         mapManager = MapManager.getInstance();
-        mapManager.create(rows, cols, bombs, mInitialX, mInitialY);
+        mapManager.create(rows, cols, bombs, mInitialX, mInitialY, this);
 
         float tmpY = mInitialY;
 
@@ -116,17 +124,6 @@ public class GameScene extends BaseScene {
             tmpY = tmpY - tileDimension;
         }
 
-        //create CameraScene for game over
-        mGameOverScene = new CameraScene(mResourceManager.camera);
-        mGameOverScene.setBackgroundEnabled(false);
-        Rectangle backgroundGameOver = new Rectangle(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2,SCREEN_WIDTH, SCREEN_HEIGHT, mResourceManager.vbom);
-        backgroundGameOver.setColor(new Color(0.004901961f, 0.004901961f, 0.004901961f));
-        backgroundGameOver.setAlpha(0.5f);
-        mGameOverScene.attachChild(backgroundGameOver);
-
-        final float overX = SCREEN_WIDTH / 2;
-        final float overY = SCREEN_HEIGHT / 2;
-
         Sprite bombsSprite = new Sprite(82, SCREEN_HEIGHT-50f,128, 64, mResourceManager.bombsTileTextureRegion, mResourceManager.vbom);
         attachChild(bombsSprite);
 
@@ -137,61 +134,10 @@ public class GameScene extends BaseScene {
         Sprite timerSprite = new Sprite(SCREEN_WIDTH - 110f, SCREEN_HEIGHT-50f,178, 64, mResourceManager.timerGameTileTextureRegion, mResourceManager.vbom);
         attachChild(timerSprite);
         mTimerHudText = new Text(SCREEN_WIDTH - 80f, SCREEN_HEIGHT-50f, mResourceManager.montserrat, "0123456789", new TextOptions(HorizontalAlign.LEFT), mResourceManager.vbom);
-        mTimerHudText.setText("00:00");
+        mTimerHudText.setText("0:00");
         attachChild(mTimerHudText);
 
-        final Sprite gameOverTextSprite = new Sprite(overX, overY,350, 250, mResourceManager.gameOverTextTextureRegion, mResourceManager.vbom);
-        mGameOverScene.attachChild(gameOverTextSprite);
 
-        final Text gameOverText = new Text(overX, overY + 50, mResourceManager.montserrat, "Hai Vinto!/Hai Perso!", new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
-        gameOverText.setScale(1.3f);
-        gameOverText.setColor(Color.BLACK);
-        mGameOverScene.attachChild(gameOverText);
-
-        final Text gameOverTextScore = new Text(overX, overY, mResourceManager.montserrat, "Il tuo punteggio è: ", new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
-        gameOverTextScore.setScale(0.8f);
-        gameOverTextScore.setColor(Color.BLACK);
-        gameOverTextScore.setVisible(false);
-        mGameOverScene.attachChild(gameOverTextScore);
-
-        Text gameOverTextQuestion = new Text(overX, overY - 50, mResourceManager.montserrat, "Vuoi giocare di nuovo?", new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
-        gameOverTextQuestion.setScale(0.8f);
-        gameOverTextQuestion.setColor(Color.BLACK);
-        mGameOverScene.attachChild(gameOverTextQuestion);
-
-        final Sprite gameOverYesSprite = new Sprite(overX - (gameOverTextSprite.getWidth()/4), overY - (gameOverTextSprite.getHeight()/2),130, 80, mResourceManager.gameOverYesTextureRegion, mResourceManager.vbom) {
-
-            @Override
-            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-                if (pSceneTouchEvent.isActionUp()) {
-                    mResourceManager.mActivity.stopSound(mResourceManager.soundExplosion);
-                    restartGame();
-                }
-                return true;
-            }
-        };
-        mGameOverScene.registerTouchArea(gameOverYesSprite);
-        mGameOverScene.attachChild(gameOverYesSprite);
-
-        Text gameOverYesText = new Text(overX - (gameOverTextSprite.getWidth()/4), overY - (gameOverTextSprite.getHeight()/2), mResourceManager.montserrat, "SI", new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
-        mGameOverScene.attachChild(gameOverYesText);
-
-        final Sprite gameOverNoSprite = new Sprite(overX + (gameOverTextSprite.getWidth()/4), overY - (gameOverTextSprite.getHeight()/2),130, 80, mResourceManager.gameOverNoTextureRegion, mResourceManager.vbom) {
-
-            @Override
-            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-                if (pSceneTouchEvent.isActionUp()) {
-                    mResourceManager.mActivity.stopSound(mResourceManager.soundExplosion);
-                    backToMenu();
-                }
-                return true;
-            }
-        };
-        mGameOverScene.registerTouchArea(gameOverNoSprite);
-        mGameOverScene.attachChild(gameOverNoSprite);
-
-        Text gameOverNoText = new Text(overX + (gameOverTextSprite.getWidth()/4), overY - (gameOverTextSprite.getHeight()/2), mResourceManager.montserrat, "NO", new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
-        mGameOverScene.attachChild(gameOverNoText);
 
         Sprite homeSprite = new Sprite(82f, 50f,64, 64, mResourceManager.homeTextureRegion, mResourceManager.vbom){
             @Override
@@ -239,16 +185,16 @@ public class GameScene extends BaseScene {
 
                 if(mapManager.getGameOver() && (!mapManager.isWin())){
                     String text = "Hai Perso!";
-                    gameOverText.setText(text);
-                    setChildScene(mGameOverScene, false, true, true);
+                    gameOverScene.setGameOverText(text);
+                    setChildScene(gameOverScene.getmGameOverScene(), false, true, true);
                 }
                 if(mapManager.getGameOver() && (mapManager.isWin())){
                     String text = "Hai Vinto!";
-                    gameOverText.setText(text);
+                    gameOverScene.setGameOverText(text);
                     String gameOverScore = "Il tuo punteggio è: " + mapManager.newScore;
-                    gameOverTextScore.setText(gameOverScore);
-                    gameOverTextScore.setVisible(true);
-                    setChildScene(mGameOverScene, false, true, true);
+                    gameOverScene.setGameOverTextScore(gameOverScore);
+                    gameOverScene.setGameOverTextScoreVisible(true);
+                    setChildScene(gameOverScene.getmGameOverScene(), false, true, true);
                 }
             }
 
@@ -264,43 +210,55 @@ public class GameScene extends BaseScene {
             @Override
             public void onTimePassed(TimerHandler pTimerHandler) {
                 mapManager.seconds++;
-                String time = Utils.secondsToString(mapManager.seconds);
-                mTimerHudText.setText(time);
+                if(mapManager.seconds==11){
+                    unregisterUpdateHandler(gameUpdateHandler);
+                    String text = "Tempo Scaduto!";
+                    gameOverScene.setGameOverText(text);
+                    gameOverScene.setGameOverTextScale(0.8f);
+                    setChildScene(gameOverScene.getmGameOverScene(), false, true, true);
+                }else{
+                    String time = Utils.secondsToString(mapManager.seconds);
+                    mTimerHudText.setText(time);
+                }
             }
         });
         registerUpdateHandler(timer);
 
+        // for debug purpose only
+        mapManager.switchBombs(tileDimension, tileDimension);
     }
 
-    private void restartGame(){
+    public void restartGame(){
         this.unregisterUpdateHandler(gameUpdateHandler);
         this.unregisterUpdateHandler(timer);
         mapManager.setGameOver(false);
         mSceneManager.setScene(SceneManager.SceneType.SCENE_GAME);
     }
 
-    private void backToMenu(){
+    public void backToMenu(){
         mResourceManager.loadMainManuResources();
         this.unregisterUpdateHandler(gameUpdateHandler);
         this.unregisterUpdateHandler(timer);
         mapManager.setGameOver(false);
         mSceneManager.setScene(SceneManager.SceneType.SCENE_MENU);
-        //mGameOverScene.clearChildScene();
-        //gameHUD.detachChildren();
         mResourceManager.unloadGameResources();
     }
 
     @Override
     public void onBackKeyPressed() {
-        //mActivity.finish();
+        mSceneManager.setScene(SceneManager.SceneType.SCENE_MENU);
     }
+
+
 
     @Override
     public SceneManager.SceneType getSceneType() {
-        return SceneManager.SceneType.SCENE_SPLASH;
+        return SceneManager.SceneType.SCENE_GAME;
     }
 
     @Override
     public void disposeScene() {
+        this.unregisterUpdateHandler(gameUpdateHandler);
+        this.unregisterUpdateHandler(timer);
     }
 }

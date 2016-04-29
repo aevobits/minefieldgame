@@ -55,7 +55,7 @@ public class Tile extends Sprite{
     }
 
     @Override
-    public synchronized boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+    public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
 
         switch (pSceneTouchEvent.getAction()){
             case TouchEvent.ACTION_DOWN:{
@@ -92,7 +92,6 @@ public class Tile extends Sprite{
                             }
                         }
                     } else {
-                        //mapManager.switchBomb(row, col, x, y, this.pWidth, this.pHeight);
                         mapManager.switchBombs(this.pWidth, this.pHeight);
                         mResourceManager.mActivity.playSound(mResourceManager.soundExplosion);
                         mapManager.newScore = secondsToScore(mapManager.seconds);

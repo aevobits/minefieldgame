@@ -56,17 +56,6 @@ public class SceneManager {
         mCurrentScene = scene;
         mCurrentSceneType = scene.getSceneType();
         ResourceManager.getInstance().engine.setScene(scene);
-/*
-        Rectangle backgroundScene = new Rectangle(240, 400,480, 800, ResourceManager.getInstance().vbom);
-        backgroundScene.setColor(new Color(0.109803922f, 0.717647059f, 0.921568627f));
-        mPreviousScene.attachChild(backgroundScene);
-        //backgroundScene.registerEntityModifier(new SequenceEntityModifier(new FadeOutModifier(5), new FadeInModifier(5)));
-
-        backgroundScene.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-        IEntityModifier iem = new AlphaModifier(5, 0, 1);
-        iem.setAutoUnregisterWhenFinished(true);
-        backgroundScene.registerEntityModifier(iem);
-*/
     }
 
     public SceneType getCurrentSceneType() {

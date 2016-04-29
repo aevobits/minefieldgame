@@ -5,8 +5,13 @@ import com.aevobits.games.minesfieldgame.ResourceManager;
 
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
+import org.andengine.entity.modifier.FadeOutModifier;
+import org.andengine.entity.modifier.IEntityModifier;
+import org.andengine.entity.modifier.SequenceEntityModifier;
+import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.Scene;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
+import org.andengine.util.adt.color.Color;
 
 /**
  * Created by vito on 20/01/16.
@@ -31,6 +36,15 @@ public abstract class BaseScene extends Scene {
         //mCamera = mResourceManager.camera;
         mSceneManager = SceneManager.getInstance();
         //createScene();
+    }
+
+    protected void fadeIn(){
+        Rectangle rectangle = new Rectangle(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT, mResourceManager.vbom);
+        rectangle.setColor(Color.BLACK);
+        IEntityModifier iem = new SequenceEntityModifier(new FadeOutModifier(0.7f));
+        iem.setAutoUnregisterWhenFinished(true);
+        rectangle.registerEntityModifier(iem);
+        attachChild(rectangle);
     }
 
     public abstract void createScene();

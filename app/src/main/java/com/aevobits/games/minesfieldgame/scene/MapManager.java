@@ -1,5 +1,8 @@
 package com.aevobits.games.minesfieldgame.scene;
 
+import android.util.Log;
+
+import com.aevobits.games.minesfieldgame.BuildConfig;
 import com.aevobits.games.minesfieldgame.ResourceManager;
 import com.aevobits.games.minesfieldgame.entity.Tile;
 
@@ -30,12 +33,13 @@ public class MapManager {
     public int newScore;
     private boolean gameOver = false;
     private boolean win;
+    private GameScene gameScene;
 
     private MapManager(){}
 
     public static MapManager getInstance(){return INSTANCE;}
 
-    public void create(int rows, int cols, int bombs, float pXInit, float pYInit){
+    public void create(int rows, int cols, int bombs, float pXInit, float pYInit, GameScene gameScene){
 
         this.map = new int[rows][cols];
         this.bombsMap = new boolean[rows][cols];
@@ -49,6 +53,7 @@ public class MapManager {
         this.flagsBombs = bombs;
         this.seconds = 0;
         this.newScore = 0;
+        this.gameScene = gameScene;
 
         generateMap();
     }
@@ -174,14 +179,14 @@ public class MapManager {
             }
         }
         Tile tile = new Tile(pX, pY, row, col, width, height, textureRegion, res.mActivity.getVertexBufferObjectManager());
-        res.mActivity.getEngine().getScene().attachChild(tile);
+        this.gameScene.attachChild(tile);
         res.mActivity.playSound(res.soundFlip);
 
     }
 
     public void switchBomb(int row, int col, float pX, float pY, final float width, final float height){
         Tile tile = new Tile(pX, pY, row, col, width, height, res.bombTileTextureRegion, res.mActivity.getVertexBufferObjectManager());
-        res.mActivity.getEngine().getScene().attachChild(tile);
+        this.gameScene.attachChild(tile);
     }
 
     public void switchBombs(final float width, final float height){
@@ -191,7 +196,7 @@ public class MapManager {
             for (int j = 1; j <= this.cols; j++) {
                 if(this.bombsMap[i-1][j-1]){
                     Tile tile = new Tile(tmpX, tmpY, i, j, width, height, res.bombTileTextureRegion, res.mActivity.getVertexBufferObjectManager());
-                    res.mActivity.getEngine().getScene().attachChild(tile);
+                    this.gameScene.attachChild(tile);
                 }
 
                 tmpX = tmpX + width;
@@ -209,7 +214,7 @@ public class MapManager {
         }else{
             tile = new Tile(pX, pY, row, col, width, height, res.tileTextureRegion, res.mActivity.getVertexBufferObjectManager());
         }
-        res.mActivity.getEngine().getScene().attachChild(tile);
+        this.gameScene.attachChild(tile);
     }
 
     public boolean hasWon()
