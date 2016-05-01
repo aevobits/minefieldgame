@@ -210,7 +210,7 @@ public class GameScene extends BaseScene {
             @Override
             public void onTimePassed(TimerHandler pTimerHandler) {
                 mapManager.seconds++;
-                if(mapManager.seconds==11){
+                if(mapManager.seconds==110){
                     unregisterUpdateHandler(gameUpdateHandler);
                     String text = "Tempo Scaduto!";
                     gameOverScene.setGameOverText(text);
@@ -258,7 +258,9 @@ public class GameScene extends BaseScene {
 
     @Override
     public void disposeScene() {
+        MapManager.getInstance().setGameOver(false);
         this.unregisterUpdateHandler(gameUpdateHandler);
         this.unregisterUpdateHandler(timer);
+        mResourceManager.unloadGameResources();
     }
 }

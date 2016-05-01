@@ -6,6 +6,7 @@ import org.andengine.entity.modifier.FadeInModifier;
 import org.andengine.entity.modifier.IEntityModifier;
 import org.andengine.entity.modifier.ParallelEntityModifier;
 import org.andengine.entity.modifier.ScaleModifier;
+import org.andengine.entity.modifier.SequenceEntityModifier;
 import org.andengine.entity.scene.Scene;
 
 import java.util.List;
@@ -52,5 +53,17 @@ public class Utils {
             iem.setAutoUnregisterWhenFinished(true);
             entity.registerEntityModifier(iem);
         }
+    }
+
+    public static <T extends Entity> void clickDownEffect(T entity){
+        IEntityModifier iem = new ScaleModifier(0.2f, 1f, 1.2f);
+        iem.setAutoUnregisterWhenFinished(true);
+        entity.registerEntityModifier(iem);
+    }
+
+    public static <T extends Entity> void clickUpEffect(T entity){
+        IEntityModifier iem = new ScaleModifier(0.2f, 1.2f, 1f);
+        iem.setAutoUnregisterWhenFinished(true);
+        entity.registerEntityModifier(iem);
     }
 }

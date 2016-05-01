@@ -72,6 +72,7 @@ public class ResourceManager {
     public TiledTextureRegion musicTextureRegion;
     public ITextureRegion rankingTextureRegion;
     public ITextureRegion rewardsTextureRegion;
+    public ITextureRegion sharingTextureRegion;
     public ITexture fontStroke;
 
     private BuildableBitmapTextureAtlas mSubBitmapTextureAtlas;
@@ -158,6 +159,8 @@ public class ResourceManager {
                 mainMenuTextureAtlas, mActivity.getAssets(), "ranking.png");
         rewardsTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
                 mainMenuTextureAtlas, mActivity.getAssets(), "rewards.png");
+        sharingTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
+                mainMenuTextureAtlas, mActivity.getAssets(), "sharing.png");
         mSubmenuTextureAtlas.load();
 
         try {

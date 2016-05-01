@@ -24,6 +24,7 @@ import android.util.Log;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.andengine.ui.activity.BaseGameActivity;
+import org.andengine.ui.activity.LayoutGameActivity;
 
 /**
  * Example base class for games. This implementation takes care of setting up
@@ -42,7 +43,7 @@ import org.andengine.ui.activity.BaseGameActivity;
  *
  * @author Bruno Oliveira (Google)
  */
-public abstract class MineFieldBaseGameActivity extends BaseGameActivity implements
+public abstract class MineFieldBaseGameActivity extends LayoutGameActivity implements
         GameHelper.GameHelperListener {
 
     // The game helper object. This class is mainly a wrapper around this object.

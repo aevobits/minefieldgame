@@ -6,6 +6,7 @@ import android.content.Intent;
 
 import com.aevobits.games.minesfieldgame.R;
 import com.aevobits.games.minesfieldgame.ResourceManager;
+import com.aevobits.games.minesfieldgame.Utils;
 import com.aevobits.games.minesfieldgame.entity.ButtonLevel;
 import com.google.android.gms.games.Games;
 
@@ -147,8 +148,8 @@ public class MainMenuScene extends BaseScene {
 
         pY = 100;
         float icon_width = 64;
-        float padding = 30;
-        pX = ((SCREEN_WIDTH - ((icon_width + padding) * 3)) / 2) + (icon_width / 2);
+        float padding = 15;
+        pX = ((SCREEN_WIDTH - ((icon_width + padding) * 4)) / 2) + (icon_width / 2);
 
         TiledSprite music = new TiledSprite(pX, pY, icon_width, icon_width, mResourceManager.musicTextureRegion, mResourceManager.vbom) {
 
@@ -156,6 +157,7 @@ public class MainMenuScene extends BaseScene {
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 switch (pSceneTouchEvent.getAction()) {
                     case TouchEvent.ACTION_UP: {
+                        Utils.clickUpEffect(this);
                         if(mActivity.isSound()) {
                             setCurrentTileIndex(1);
                             mActivity.setSound(false);
@@ -166,6 +168,9 @@ public class MainMenuScene extends BaseScene {
 
                         }
                         return true;
+                    }
+                    case TouchEvent.ACTION_DOWN: {
+                        Utils.clickDownEffect(this);
                     }
                     default: {
                         return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
@@ -190,10 +195,14 @@ public class MainMenuScene extends BaseScene {
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 switch (pSceneTouchEvent.getAction()) {
                     case TouchEvent.ACTION_UP: {
+                        Utils.clickUpEffect(this);
                         //final Intent showTheBestIntent = Games.Leaderboards.getLeaderboardIntent(mActivity.getApiClient(), "CgkIoq7_rKsbEAIQAQ");
                         //mActivity.startActivityForResult(showTheBestIntent, REQUEST_THE_BEST_LEADERBOARD);
 
                         return true;
+                    }
+                    case TouchEvent.ACTION_DOWN: {
+                        Utils.clickDownEffect(this);
                     }
                     default: {
                         return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
@@ -205,30 +214,60 @@ public class MainMenuScene extends BaseScene {
         registerTouchArea(ranking);
 
         pX = pX + icon_width + padding;
-        Sprite rewards = new Sprite(pX, pY, icon_width, icon_width, mResourceManager.rewardsTextureRegion, mResourceManager.vbom );
+        Sprite rewards = new Sprite(pX, pY, icon_width, icon_width, mResourceManager.rewardsTextureRegion, mResourceManager.vbom ){
+            @Override
+            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+                switch (pSceneTouchEvent.getAction()) {
+                    case TouchEvent.ACTION_UP: {
+                        Utils.clickUpEffect(this);
+                        return true;
+                    }
+                    case TouchEvent.ACTION_DOWN: {
+                        Utils.clickDownEffect(this);
+                    }
+                    default: {
+                        return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
+                    }
+                }
+            }
+        };
         attachChild(rewards);
         registerTouchArea(rewards);
+
+        pX = pX + icon_width + padding;
+        Sprite sharing = new Sprite(pX, pY, icon_width, icon_width, mResourceManager.sharingTextureRegion, mResourceManager.vbom ){
+            @Override
+            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+                switch (pSceneTouchEvent.getAction()) {
+                    case TouchEvent.ACTION_UP: {
+                        Utils.clickUpEffect(this);
+                        Intent sendIntent = new Intent();
+                        sendIntent.setAction(Intent.ACTION_SEND);
+                        sendIntent.putExtra(Intent.EXTRA_SUBJECT,mActivity.getString(R.string.share_extra_subject));
+                        sendIntent.putExtra(Intent.EXTRA_TEXT, mActivity.getString(R.string.shate_extra_text));
+                        sendIntent.setType("text/plain");
+                        mActivity.startActivity(Intent.createChooser(sendIntent, mActivity.getString(R.string.share_chooser_text)));
+
+                        return true;
+                    }
+                    case TouchEvent.ACTION_DOWN: {
+                        Utils.clickDownEffect(this);
+                    }
+                    default: {
+                        return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
+                    }
+                }
+            }
+        };
+        attachChild(sharing);
+        registerTouchArea(sharing);
 
         fadeIn();
 
     }
 
     @Override
-    public void onBackKeyPressed() {
-
-            new AlertDialog.Builder(mActivity)
-                    .setTitle("Really Exit?")
-                    .setMessage("Are you sure you want to exit?")
-                    .setNegativeButton(android.R.string.no, null)
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-
-                        public void onClick(DialogInterface arg0, int arg1) {
-                            System.exit(0);
-                        }
-                    }).create().show();
-
-
-    }
+    public void onBackKeyPressed() {}
 
     @Override
     public SceneManager.SceneType getSceneType() {
@@ -236,17 +275,5 @@ public class MainMenuScene extends BaseScene {
     }
 
     @Override
-    public void disposeScene() {
-
-        new AlertDialog.Builder(mActivity)
-                .setTitle("Really Exit?")
-                .setMessage("Are you sure you want to exit?")
-                .setNegativeButton(android.R.string.no, null)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        System.exit(0);
-                    }
-                }).create().show();
-    }
+    public void disposeScene() {}
 }

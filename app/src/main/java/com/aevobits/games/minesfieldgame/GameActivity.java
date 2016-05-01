@@ -8,7 +8,11 @@ import android.os.Message;
 import android.widget.Toast;
 
 import com.aevobits.games.minesfieldgame.scene.BaseScene;
+import com.aevobits.games.minesfieldgame.scene.GameScene;
+import com.aevobits.games.minesfieldgame.scene.MapManager;
 import com.aevobits.games.minesfieldgame.scene.SceneManager;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.example.games.basegameutils.MineFieldBaseGameActivity;
 
 import org.andengine.audio.sound.Sound;
@@ -27,7 +31,7 @@ import java.io.IOException;
 /**
  * Created by vito on 29/02/16.
  */
-public class GameActivity extends BaseGameActivity{//MineFieldBaseGameActivity {
+public class GameActivity extends MineFieldBaseGameActivity {
 
     private static final String TAG = "GameActivity";
 
@@ -139,7 +143,7 @@ public class GameActivity extends BaseGameActivity{//MineFieldBaseGameActivity {
             }
         }
     };
-/*
+
     @Override
     public void onSignInFailed() {
 
@@ -149,11 +153,13 @@ public class GameActivity extends BaseGameActivity{//MineFieldBaseGameActivity {
     public void onSignInSucceeded() {
 
     }
-*/
+
 
     @Override
     public void onBackPressed() {
-        if(((BaseScene)this.getEngine().getScene()).getSceneType() == SceneManager.SceneType.SCENE_GAME){
+        final BaseScene baseScene = ((BaseScene) this.getEngine().getScene());
+
+        if(baseScene.getSceneType() == SceneManager.SceneType.SCENE_GAME){
             new AlertDialog.Builder(this)
                     .setTitle(R.string.quitTitle)
                     .setMessage(R.string.quitTxt)
@@ -161,10 +167,12 @@ public class GameActivity extends BaseGameActivity{//MineFieldBaseGameActivity {
                     .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 
                         public void onClick(DialogInterface arg0, int arg1) {
-                            finish();
+                            baseScene.disposeScene();
+                            mResourceManager.loadMainManuResources();
+                            mSceneManager.setScene(SceneManager.SceneType.SCENE_MENU);
                         }
                     }).create().show();
-        }else if(((BaseScene)this.getEngine().getScene()).getSceneType() == SceneManager.SceneType.SCENE_MENU){
+        }else if(baseScene.getSceneType() == SceneManager.SceneType.SCENE_MENU){
             new AlertDialog.Builder(this)
                     .setTitle(R.string.exitTitle)
                     .setMessage(R.string.exitTxt)
@@ -176,7 +184,24 @@ public class GameActivity extends BaseGameActivity{//MineFieldBaseGameActivity {
                         }
                     }).create().show();
         }
-        ((BaseScene)this.getEngine().getScene()).disposeScene();
 
+    }
+
+    @Override
+    protected int getLayoutID() {
+        return R.layout.game_layout;
+    }
+
+    @Override
+    protected int getRenderSurfaceViewID() {
+        return R.id.SurfaceViewId;
+    }
+
+    @Override
+    protected void onSetContentView() {
+        super.onSetContentView();
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
 }
