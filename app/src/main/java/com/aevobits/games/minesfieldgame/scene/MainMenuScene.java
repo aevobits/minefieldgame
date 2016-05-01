@@ -146,7 +146,7 @@ public class MainMenuScene extends BaseScene {
         textLevel4.setScale(1.35f);
         attachChild(textLevel4);
 
-        pY = 100;
+        pY = 130;
         float icon_width = 64;
         float padding = 15;
         pX = ((SCREEN_WIDTH - ((icon_width + padding) * 4)) / 2) + (icon_width / 2);

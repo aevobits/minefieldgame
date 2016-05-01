@@ -98,7 +98,7 @@ public class GameScene extends BaseScene {
         float mInitialX = PADDING_SIDE + (tileDimension * 0.5f);
 
         final float fieldHeight = (tileDimension * this.rows);
-        float mInitialY = (((GameActivity.CAMERA_HEIGHT - fieldHeight) * 0.5f) + fieldHeight) - (tileDimension * 0.5f);
+        float mInitialY = ((((GameActivity.CAMERA_HEIGHT - fieldHeight) * 0.5f) + fieldHeight) - (tileDimension * 0.5f))+30f;
 
         Rectangle rectangle = new Rectangle(mInitialX + (tileDimension * (this.cols * 0.5f) - tileDimension * 0.5f),
                 mInitialY - (tileDimension * (this.rows * 0.5f) - tileDimension * 0.5f),
