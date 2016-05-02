@@ -4,8 +4,6 @@ import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
 
-import com.aevobits.games.minesfieldgame.scene.PlayServicesManager;
-
 import org.andengine.audio.sound.Sound;
 import org.andengine.audio.sound.SoundFactory;
 import org.andengine.engine.Engine;
@@ -37,11 +35,13 @@ public class ResourceManager {
     public Engine engine;
     public Camera camera;
     public VertexBufferObjectManager vbom;
-    public PlayServicesManager playServicesManager;
     public int density;
 
     public float startClick;
     public float endClick;
+
+    private BuildableBitmapTextureAtlas splashScreenTextureAtlas;
+    public ITextureRegion logoTextureRegion;
 
     public ITextureRegion tileTextureRegion;
     public ITextureRegion emptyTileTextureRegion;
@@ -107,7 +107,6 @@ public class ResourceManager {
         this.engine = engine;
         this.camera = camera;
         this.vbom = vbom;
-        this.playServicesManager = PlayServicesManager.getInstance();
 
         WindowManager windowManager = (WindowManager) mActivity.getSystemService(mActivity.WINDOW_SERVICE);
         Display display = windowManager.getDefaultDisplay();
@@ -119,6 +118,20 @@ public class ResourceManager {
     }
 
     public void loadSplashResources(){
+        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
+        splashScreenTextureAtlas = new BuildableBitmapTextureAtlas(mActivity.getTextureManager(),
+                1024, 1024, BitmapTextureFormat.RGBA_8888,
+                TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        logoTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
+                splashScreenTextureAtlas, mActivity.getAssets(), "aevobits_logo.png");
+
+        try {
+            splashScreenTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(2, 0, 2));
+            splashScreenTextureAtlas.load();
+        } catch (ITextureAtlasBuilder.TextureAtlasBuilderException e) {
+            throw  new RuntimeException("Error while loading splash textures", e);
+        }
+
 
         candy_shop = FontFactory.createFromAsset(mActivity.getFontManager(), mActivity.getTextureManager(), 256, 256,
                 mActivity.getAssets(), "candy_shop.ttf", 40, true, Color.WHITE_ARGB_PACKED_INT);

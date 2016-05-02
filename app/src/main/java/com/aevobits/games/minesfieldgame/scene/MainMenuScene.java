@@ -23,8 +23,6 @@ import org.andengine.util.adt.color.Color;
  */
 public class MainMenuScene extends BaseScene {
 
-    private PlayServicesManager playServicesManager;
-
     private static final int REQUEST_THE_BEST_LEADERBOARD = 37;
 
     @Override

@@ -201,7 +201,7 @@ public class GameActivity extends MineFieldBaseGameActivity {
     protected void onSetContentView() {
         super.onSetContentView();
         AdView mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("043E555F988D1CEBF136C59FD0DD2C9B").build();
         mAdView.loadAd(adRequest);
     }
 }

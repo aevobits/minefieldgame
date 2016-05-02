@@ -116,7 +116,7 @@ public class GameScene extends BaseScene {
             for (int j = 1; j <= this.cols; j++) {
                 Tile tile = new Tile(tmpX, tmpY, i, j, tileDimension, tileDimension, mResourceManager.tileTextureRegion, mResourceManager.vbom);
                 registerTouchArea(tile);
-                setTouchAreaBindingOnActionDownEnabled(true);
+                //setTouchAreaBindingOnActionDownEnabled(true);
                 attachChild(tile);
 
                 tmpX = tmpX + tileDimension;
@@ -124,22 +124,24 @@ public class GameScene extends BaseScene {
             tmpY = tmpY - tileDimension;
         }
 
-        Sprite bombsSprite = new Sprite(82, SCREEN_HEIGHT-50f,128, 64, mResourceManager.bombsTileTextureRegion, mResourceManager.vbom);
+        Sprite bombsSprite = new Sprite(82, SCREEN_HEIGHT-50f,100, 50, mResourceManager.bombsTileTextureRegion, mResourceManager.vbom);
         attachChild(bombsSprite);
 
-        mapManager.mBombsHudText = new Text(110f, SCREEN_HEIGHT-50f, mResourceManager.montserrat, "0123456789", new TextOptions(HorizontalAlign.LEFT), mResourceManager.vbom);
+        mapManager.mBombsHudText = new Text(105f, SCREEN_HEIGHT-50f, mResourceManager.montserrat, "0123456789", new TextOptions(HorizontalAlign.LEFT), mResourceManager.vbom);
+        mapManager.mBombsHudText.setScale(0.7f);
         mapManager.mBombsHudText.setText(String.valueOf(mapManager.flagsBombs));
         attachChild(mapManager.mBombsHudText);
 
-        Sprite timerSprite = new Sprite(SCREEN_WIDTH - 110f, SCREEN_HEIGHT-50f,178, 64, mResourceManager.timerGameTileTextureRegion, mResourceManager.vbom);
+        Sprite timerSprite = new Sprite(SCREEN_WIDTH - 104f, SCREEN_HEIGHT-50f,136, 50, mResourceManager.timerGameTileTextureRegion, mResourceManager.vbom);
         attachChild(timerSprite);
-        mTimerHudText = new Text(SCREEN_WIDTH - 80f, SCREEN_HEIGHT-50f, mResourceManager.montserrat, "0123456789", new TextOptions(HorizontalAlign.LEFT), mResourceManager.vbom);
+        mTimerHudText = new Text(SCREEN_WIDTH - 85f, SCREEN_HEIGHT-50f, mResourceManager.montserrat, "0123456789", new TextOptions(HorizontalAlign.LEFT), mResourceManager.vbom);
         mTimerHudText.setText("0:00");
+        mTimerHudText.setScale(0.7f);
         attachChild(mTimerHudText);
 
 
 
-        Sprite homeSprite = new Sprite(82f, 50f,64, 64, mResourceManager.homeTextureRegion, mResourceManager.vbom){
+        Sprite homeSprite = new Sprite(82f, 110f,50, 50, mResourceManager.homeTextureRegion, mResourceManager.vbom){
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 if (pSceneTouchEvent.isActionUp()) {
@@ -151,21 +153,21 @@ public class GameScene extends BaseScene {
         attachChild(homeSprite);
         registerTouchArea(homeSprite);
 
-        Sprite bestScoreSprite = new Sprite(SCREEN_WIDTH / 2, 65f,160, 96, mResourceManager.bestScoreTextureRegion, mResourceManager.vbom);
+        Sprite bestScoreSprite = new Sprite(SCREEN_WIDTH / 2, 110f,120, 70, mResourceManager.bestScoreTextureRegion, mResourceManager.vbom);
         attachChild(bestScoreSprite);
 
-        Text bestScoreText = new Text(SCREEN_WIDTH / 2, 85f, mResourceManager.montserrat, "BEST", new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
-        bestScoreText.setScale(1.1f);
+        Text bestScoreText = new Text(SCREEN_WIDTH / 2, 125f, mResourceManager.montserrat, "BEST", new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
+        bestScoreText.setScale(0.87f);
         bestScoreText.setColor(Color.BLACK);
         attachChild(bestScoreText);
 
         String bestScoreString = "" + mResourceManager.mActivity.getHiscore();
-        Text bestScore = new Text(SCREEN_WIDTH / 2, 45f, mResourceManager.montserrat, bestScoreString, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
-        bestScore.setScale(0.9f);
+        Text bestScore = new Text(SCREEN_WIDTH / 2, 95f, mResourceManager.montserrat, bestScoreString, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
+        bestScore.setScale(0.77f);
         bestScore.setColor(Color.BLACK);
         attachChild(bestScore);
 
-        Sprite replayArrowSprite = new Sprite((SCREEN_WIDTH)-82f, 50f,64, 64, mResourceManager.replayTextureRegion, mResourceManager.vbom){
+        Sprite replayArrowSprite = new Sprite((SCREEN_WIDTH)-82f, 110f,50, 50, mResourceManager.replayTextureRegion, mResourceManager.vbom){
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 if (pSceneTouchEvent.isActionUp()) {
