@@ -39,6 +39,8 @@ import org.andengine.input.touch.detector.HoldDetector;
 import org.andengine.util.adt.align.HorizontalAlign;
 import org.andengine.util.adt.color.Color;
 
+import java.util.Locale;
+
 /**
  * Created by vito on 29/02/16.
  */
@@ -85,6 +87,7 @@ public class GameScene extends BaseScene {
         createField();
         gameOverScene = new GameOverScene(this);
         fadeIn();
+        mActivity.setGamesPlayed(mActivity.getGamesPlayed(MapManager.getInstance().level) + 1, MapManager.getInstance().level);
     }
 
     private void createBackground(){
@@ -116,7 +119,6 @@ public class GameScene extends BaseScene {
             for (int j = 1; j <= this.cols; j++) {
                 Tile tile = new Tile(tmpX, tmpY, i, j, tileDimension, tileDimension, mResourceManager.tileTextureRegion, mResourceManager.vbom);
                 registerTouchArea(tile);
-                //setTouchAreaBindingOnActionDownEnabled(true);
                 attachChild(tile);
 
                 tmpX = tmpX + tileDimension;
@@ -145,6 +147,7 @@ public class GameScene extends BaseScene {
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 if (pSceneTouchEvent.isActionUp()) {
+
                     backToMenu();
                 }
                 return true;
@@ -161,7 +164,9 @@ public class GameScene extends BaseScene {
         bestScoreText.setColor(Color.BLACK);
         attachChild(bestScoreText);
 
-        String bestScoreString = "" + mResourceManager.mActivity.getHiscore();
+        Locale current = mActivity.getResources().getConfiguration().locale;
+        float highScore = mResourceManager.mActivity.getHiscore();
+        String bestScoreString = "" + String.format(current,"%.02f", highScore);
         Text bestScore = new Text(SCREEN_WIDTH / 2, 95f, mResourceManager.montserrat, bestScoreString, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
         bestScore.setScale(0.77f);
         bestScore.setColor(Color.BLACK);
@@ -193,7 +198,8 @@ public class GameScene extends BaseScene {
                 if(mapManager.getGameOver() && (mapManager.isWin())){
                     String text = "Hai Vinto!";
                     gameOverScene.setGameOverText(text);
-                    String gameOverScore = "Il tuo punteggio è: " + mapManager.newScore;
+                    Locale current = mActivity.getResources().getConfiguration().locale;
+                    String gameOverScore = "punteggio: " + String.format(current,"%.02f", mapManager.newScore);
                     gameOverScene.setGameOverTextScore(gameOverScore);
                     gameOverScene.setGameOverTextScoreVisible(true);
                     setChildScene(gameOverScene.getmGameOverScene(), false, true, true);
@@ -212,6 +218,7 @@ public class GameScene extends BaseScene {
             @Override
             public void onTimePassed(TimerHandler pTimerHandler) {
                 mapManager.seconds++;
+                /*
                 if(mapManager.seconds==110){
                     unregisterUpdateHandler(gameUpdateHandler);
                     String text = "Tempo Scaduto!";
@@ -219,15 +226,16 @@ public class GameScene extends BaseScene {
                     gameOverScene.setGameOverTextScale(0.8f);
                     setChildScene(gameOverScene.getmGameOverScene(), false, true, true);
                 }else{
+                */
                     String time = Utils.secondsToString(mapManager.seconds);
                     mTimerHudText.setText(time);
-                }
+                //}
             }
         });
         registerUpdateHandler(timer);
 
         // for debug purpose only
-        mapManager.switchBombs(tileDimension, tileDimension);
+        //mapManager.switchBombs(tileDimension, tileDimension);
     }
 
     public void restartGame(){

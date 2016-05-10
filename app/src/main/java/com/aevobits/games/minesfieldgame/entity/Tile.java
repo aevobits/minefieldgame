@@ -70,7 +70,7 @@ public class Tile extends Sprite{
                 ResourceManager.getInstance().endClick = SystemClock.elapsedRealtime();
                 float elapsedTime = ResourceManager.getInstance().endClick - ResourceManager.getInstance().startClick;
                 if(BuildConfig.DEBUG) Log.v("ElapsedTime:", elapsedTime + "");
-                boolean click = (Float.compare(elapsedTime,450.0f)<=0);
+                boolean click = (Float.compare(elapsedTime,400.0f)<=0);
                 if(click) {
                     if (!mapManager.bombsMap[row][col]) {
                         if (mapManager.map[row][col] == 0) {
@@ -80,10 +80,16 @@ public class Tile extends Sprite{
                             mapManager.shownMap[row][col] = true;
 
                         }
+                        if (mapManager.flagMap[row][col]==true){
+                            mapManager.flagsBombs++;
+                            mapManager.mBombsHudText.setText(String.valueOf(mapManager.flagsBombs));
+                        }
                         mapManager.flagMap[row][col] = false;
+
                         if(mapManager.hasWon()){
                             mapManager.setGameOver(true);
                             mapManager.setWin(true);
+                            mActivity.setGamesWon(mActivity.getGamesWon(MapManager.getInstance().level) + 1, MapManager.getInstance().level);
                             mapManager.newScore = secondsToScore(mapManager.seconds);
                             if(mapManager.newScore>mResourceManager.mActivity.getHiscore()){
                                 mResourceManager.mActivity.setHiScore(mapManager.newScore);
@@ -108,7 +114,7 @@ public class Tile extends Sprite{
                         mapManager.flagsBombs++;
                         mapManager.mBombsHudText.setText(String.valueOf(mapManager.flagsBombs));
 
-                    } else {
+                    } else if (!mapManager.shownMap[row][col]){
                         if(mapManager.flagsBombs>0) {
                             mapManager.switchFlag(row, col, x, y, this.pWidth, this.pHeight, true);
                             mapManager.flagMap[row][col] = true;
@@ -124,6 +130,7 @@ public class Tile extends Sprite{
                     if (mapManager.hasWon()) {
                         mapManager.setGameOver(true);
                         mapManager.setWin(true);
+                        mActivity.setGamesWon(mActivity.getGamesWon(MapManager.getInstance().level) + 1, MapManager.getInstance().level);
                         mapManager.newScore = secondsToScore(mapManager.seconds);
                         if (mapManager.newScore > mResourceManager.mActivity.getHiscore()) {
                             mResourceManager.mActivity.setHiScore(mapManager.newScore);
@@ -157,8 +164,11 @@ public class Tile extends Sprite{
         this.col = col;
     }
 
-    private int secondsToScore(int seconds){
-        return (150 - (seconds / 4)) * MapManager.getInstance().level;
+    private float secondsToScore(int seconds){
+        float count3bv = mapManager.count3BV();
+        float score = (count3bv / seconds)*1000;
+        //return (150 - (seconds / 4)) * MapManager.getInstance().level;
+        return score;
     }
 
 }

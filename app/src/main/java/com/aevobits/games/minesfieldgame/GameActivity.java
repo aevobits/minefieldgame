@@ -40,6 +40,14 @@ public class GameActivity extends MineFieldBaseGameActivity {
 
     public static final String KEY_SOUND = "Sound";
     public static final String KEY_HISCORE = "HiScore";
+    public static final String KEY_GAMES_PLAYED_1 = "GamesPlayed1";
+    public static final String KEY_GAMES_PLAYED_2 = "GamesPlayed2";
+    public static final String KEY_GAMES_PLAYED_3 = "GamesPlayed3";
+    public static final String KEY_GAMES_PLAYED_4 = "GamesPlayed4";
+    public static final String KEY_GAMES_WON_1 = "GamesWon1";
+    public static final String KEY_GAMES_WON_2 = "GamesWon2";
+    public static final String KEY_GAMES_WON_3 = "GamesWon3";
+    public static final String KEY_GAMES_WON_4 = "GamesWon4";
 
     private SharedPreferences settings;
 
@@ -106,20 +114,116 @@ public class GameActivity extends MineFieldBaseGameActivity {
         return settings.getBoolean(KEY_SOUND, true);
     }
 
-    public void setHiScore(int score){
+    public void setHiScore(float score){
         SharedPreferences.Editor settingsEditor = settings.edit();
-        settingsEditor.putInt(KEY_HISCORE, score);
+        settingsEditor.putFloat(KEY_HISCORE, score);
         settingsEditor.commit();
     }
 
-    public int getHiscore(){
-        return settings.getInt(KEY_HISCORE, 0);
+    public float getHiscore(){
+        return settings.getFloat(KEY_HISCORE, 0f);
     }
 
     public void resetScore(){
         SharedPreferences.Editor settingsEditor = settings.edit();
-        settingsEditor.putInt(KEY_HISCORE, 0);
+        settingsEditor.putFloat(KEY_HISCORE, 0f);
         settingsEditor.commit();
+    }
+
+    public void setGamesPlayed(int gamesPlayed, int level){
+        SharedPreferences.Editor settingsEditor = settings.edit();
+        switch (level){
+            case 1:{
+                settingsEditor.putInt(KEY_GAMES_PLAYED_1, gamesPlayed);
+                break;
+            }
+            case 2:{
+                settingsEditor.putInt(KEY_GAMES_PLAYED_2, gamesPlayed);
+                break;
+            }
+            case 3:{
+                settingsEditor.putInt(KEY_GAMES_PLAYED_3, gamesPlayed);
+                break;
+            }
+            case 4:{
+                settingsEditor.putInt(KEY_GAMES_PLAYED_4, gamesPlayed);
+                break;
+            }
+        }
+
+        settingsEditor.commit();
+    }
+
+    public int getGamesPlayed(int level){
+        int gamesPlayed = 0;
+        switch (level){
+            case 1:{
+                gamesPlayed = settings.getInt(KEY_GAMES_PLAYED_1, 0);
+                break;
+            }
+            case 2:{
+                gamesPlayed = settings.getInt(KEY_GAMES_PLAYED_2, 0);
+                break;
+            }
+            case 3:{
+                gamesPlayed = settings.getInt(KEY_GAMES_PLAYED_3, 0);
+                break;
+            }
+            case 4:{
+                gamesPlayed = settings.getInt(KEY_GAMES_PLAYED_4, 0);
+                break;
+            }
+        }
+
+        return gamesPlayed;
+    }
+
+    public void setGamesWon(int gamesWon, int level){
+        SharedPreferences.Editor settingsEditor = settings.edit();
+        switch (level){
+            case 1:{
+                settingsEditor.putInt(KEY_GAMES_WON_1, gamesWon);
+                break;
+            }
+            case 2:{
+                settingsEditor.putInt(KEY_GAMES_WON_2, gamesWon);
+                break;
+            }
+            case 3:{
+                settingsEditor.putInt(KEY_GAMES_WON_3, gamesWon);
+                break;
+            }
+            case 4:{
+                settingsEditor.putInt(KEY_GAMES_WON_4, gamesWon);
+                break;
+            }
+        }
+
+        settingsEditor.commit();
+    }
+
+    public int getGamesWon(int level){
+        int gamesWon = 0;
+        switch (level){
+            case 1:{
+                gamesWon = settings.getInt(KEY_GAMES_WON_1, 0);
+                break;
+            }
+            case 2:{
+                gamesWon = settings.getInt(KEY_GAMES_WON_2, 0);
+                break;
+            }
+            case 3:{
+                gamesWon = settings.getInt(KEY_GAMES_WON_3, 0);
+                break;
+            }
+            case 4:{
+                gamesWon = settings.getInt(KEY_GAMES_WON_4, 0);
+                break;
+            }
+        }
+
+        return gamesWon;
     }
 
     public void playSound(Sound soundToPlay){

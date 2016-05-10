@@ -18,6 +18,7 @@ import org.andengine.util.adt.color.Color;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -64,7 +65,8 @@ public class GameOverScene {
         mGameOverScene.attachChild(gameOverText);
         entityList.add(gameOverText);
 
-        gameOverTextScore = new Text(overX, overY, mResourceManager.montserrat, "Il tuo punteggio è: ", new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
+        Locale current = mResourceManager.mActivity.getResources().getConfiguration().locale;
+        gameOverTextScore = new Text(overX, overY, mResourceManager.montserrat, "punteggio: " + String.format(current,"%.02f", 123456789.123456789f), new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
         gameOverTextScore.setScale(0.8f);
         gameOverTextScore.setColor(Color.BLACK);
         gameOverTextScore.setVisible(false);
@@ -124,20 +126,18 @@ public class GameOverScene {
     }
 
     public void setGameOverText(String text){
-        gameOverText.setText(text);
+        this.gameOverText.setText(text);
     }
 
     public void setGameOverTextScale(float scale){
-        gameOverText.setScale(scale);
+        this.gameOverText.setScale(scale);
     }
 
     public void setGameOverTextScore(String text){
-        gameOverTextScore.setText(text);
+        this.gameOverTextScore.setText(text);
     }
 
     public void setGameOverTextScoreVisible(boolean visible){
-        gameOverTextScore.setVisible(visible);
+        this.gameOverTextScore.setVisible(visible);
     }
-
-
 }

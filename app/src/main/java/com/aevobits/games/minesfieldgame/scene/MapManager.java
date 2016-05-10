@@ -9,6 +9,8 @@ import com.aevobits.games.minesfieldgame.entity.Tile;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.texture.region.ITextureRegion;
 
+import java.util.Arrays;
+
 /**
  * Created by vito on 04/03/16.
  */
@@ -18,6 +20,7 @@ public class MapManager {
 
     private ResourceManager res = ResourceManager.getInstance();
     public int map[][];
+    public char mapMarks[][];
     public boolean bombsMap[][];
     public boolean shownMap[][];
     public boolean flagMap[][];
@@ -30,10 +33,11 @@ public class MapManager {
     public int flagsBombs;
     public Text mBombsHudText;
     public int seconds;
-    public int newScore;
+    public float newScore;
     private boolean gameOver = false;
     private boolean win;
     private GameScene gameScene;
+    private int count = 0;
 
     private MapManager(){}
 
@@ -54,6 +58,11 @@ public class MapManager {
         this.seconds = 0;
         this.newScore = 0;
         this.gameScene = gameScene;
+        this.mapMarks = new char[rows][cols];
+
+        for (char[] row:this.mapMarks){
+            Arrays.fill(row, 'N');
+        }
 
         generateMap();
     }
@@ -253,6 +262,47 @@ public class MapManager {
 
     public boolean isWin(){
         return this.win;
+    }
+
+    public int count3BV(){
+        count = 0;
+        for (int i=0; i < this.rows; i++){
+            for (int j=0; j < this.cols; j++){
+                if ((map[i][j]==0)&&(!bombsMap[i][j])){
+                    if(mapMarks[i][j]=='C'){
+                        continue;
+                    }
+                    count = count + 1;
+                    mapMarks[i][j]='C';
+                    floodFillMark(i, j);
+                }
+            }
+        }
+
+
+        for (int i=0; i < this.rows; i++) {
+            for (int j = 0; j < this.cols; j++) {
+                if ((mapMarks[i][j]=='N')&&(!bombsMap[i][j])){
+                    count=count + 1;
+                }
+            }
+        }
+        return count;
+    }
+
+    private void floodFillMark(int row, int col){
+        for(int r = -1; r <= 1; r++){
+            for(int c = -1; c <= 1; c++){
+                if(isIn(row + r, col + c)) {
+                    if (mapMarks[row + r][col + c] != 'C') {
+                        mapMarks[row + r][col + c] = 'C';
+                        if (map[row + r][col + c] == 0) {
+                            floodFillMark(row + r, col + c);
+                        }
+                    }
+                }
+            }
+        }
     }
 
 }
