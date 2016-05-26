@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@android:color/holo_blue_light"
+    android:padding="5dp">
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".RulesActivity"
+        android:weightSum="1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/howToPlay"
+            android:id="@+id/howToPlay"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="25dp" />
+
+        <TextView
+            android:id="@+id/rulesText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rules_description"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="#ffffff"
+            android:padding="10dp">
+        </TextView>
+
+        <ImageButton
+            android:id="@+id/backToMenuButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:selectableItemBackground"
+            android:src="@drawable/home"
+            android:paddingTop="20dp"
+            android:layout_gravity="center_horizontal" />
+
+    </LinearLayout>
+</ScrollView>

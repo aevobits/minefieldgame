@@ -4,6 +4,7 @@ import org.andengine.entity.Entity;
 import org.andengine.entity.modifier.AlphaModifier;
 import org.andengine.entity.modifier.FadeInModifier;
 import org.andengine.entity.modifier.IEntityModifier;
+import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.entity.modifier.ParallelEntityModifier;
 import org.andengine.entity.modifier.ScaleModifier;
 import org.andengine.entity.modifier.SequenceEntityModifier;
@@ -27,8 +28,20 @@ public class Utils {
         return mnStr + ":" + secStr;
     }
 
-    public static <T extends Entity> void fadeIn(T entity){
-        IEntityModifier iem = new FadeInModifier(5f);
+    public static <T extends Entity> void fadeInMenu(T entity, float newX, float newY){
+        float pX = entity.getX();
+        float pY = entity.getY();
+        IEntityModifier iem = new ParallelEntityModifier(new ScaleModifier(0.2f,0f,1f, 0f, 1f),
+                                                        new MoveModifier(0.2f, pX, pY, newX, newY));
+        iem.setAutoUnregisterWhenFinished(true);
+        entity.registerEntityModifier(iem);
+    }
+
+    public static <T extends Entity> void fadeOutMenu(T entity, float newX, float newY){
+        float pX = entity.getX();
+        float pY = entity.getY();
+        IEntityModifier iem = new ParallelEntityModifier(new ScaleModifier(0.2f, 1f, 0f, 1f, 0f),
+                                                        new MoveModifier(0.2f, pX, pY, newX, newY));
         iem.setAutoUnregisterWhenFinished(true);
         entity.registerEntityModifier(iem);
     }

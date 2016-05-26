@@ -18,4 +18,12 @@
     <string name="shate_extra_text">Hi, download this new Game at: https://play.google.com/store/apps?hl=it</string>
     <string name="share_chooser_text">Share this Game!</string>
 
+    <string name="rules_description">The player is initially presented with a grid of undifferentiated squares.
+        \nSome randomly selected squares, unknown to the player, are designated to contain mines.
+        \n\nThe game is played by revealing squares of the grid by clicking each square. If a square containing a mine is revealed,
+        the player loses the game. If no mine is revealed, a digit is instead displayed in the square, indicating how many adjacent
+        squares contain mines; if no mines are adjacent, the square becomes blank, and all adjacent squares will be recursively revealed.
+        \n\nThe player uses this information to deduce the contents of other squares, and may either safely reveal each square or
+        mark the square as containing a mine.</string>
+    <string name="howToPlay">How To Play?</string>
 </resources>

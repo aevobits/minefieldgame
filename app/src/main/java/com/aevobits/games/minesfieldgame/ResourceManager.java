@@ -73,6 +73,11 @@ public class ResourceManager {
     public ITextureRegion rankingTextureRegion;
     public ITextureRegion rewardsTextureRegion;
     public ITextureRegion sharingTextureRegion;
+    public ITextureRegion infoTextureRegion;
+    public ITextureRegion statsTextureRegion;
+    public ITextureRegion rateTextureRegion;
+    public ITextureRegion rulesTextureRegion;
+    public ITextureRegion rulesBoardTextureRegion;
     public ITexture fontStroke;
 
     private BuildableBitmapTextureAtlas mSubBitmapTextureAtlas;
@@ -90,6 +95,7 @@ public class ResourceManager {
     //sounds
     public Sound soundExplosion;
     public Sound soundFlip;
+    public Sound soundClick;
 
 
     private static final ResourceManager INSTANCE = new ResourceManager();
@@ -166,7 +172,7 @@ public class ResourceManager {
         buttonProLevelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
                 mainMenuTextureAtlas, mActivity.getAssets(), "level4.png");
 
-        mSubmenuTextureAtlas = new BitmapTextureAtlas(mActivity.getTextureManager(), 512, 512, TextureOptions.BILINEAR);
+        mSubmenuTextureAtlas = new BitmapTextureAtlas(mActivity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);
         musicTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mSubmenuTextureAtlas, mActivity, "sound.png", 0, 0, 2, 1);
         rankingTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
                 mainMenuTextureAtlas, mActivity.getAssets(), "ranking.png");
@@ -174,6 +180,16 @@ public class ResourceManager {
                 mainMenuTextureAtlas, mActivity.getAssets(), "rewards.png");
         sharingTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
                 mainMenuTextureAtlas, mActivity.getAssets(), "sharing.png");
+        infoTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
+                mainMenuTextureAtlas, mActivity.getAssets(), "info.png");
+        statsTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
+                mainMenuTextureAtlas, mActivity.getAssets(), "stats.png");
+        rateTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
+                mainMenuTextureAtlas, mActivity.getAssets(), "rate.png");
+        rulesTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
+                mainMenuTextureAtlas, mActivity.getAssets(), "rules.png");
+        rulesBoardTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
+                mainMenuTextureAtlas, mActivity.getAssets(), "rulesBoard.png");
         mSubmenuTextureAtlas.load();
 
         try {
@@ -192,6 +208,14 @@ public class ResourceManager {
 
         //montserrat = FontFactory.createStrokeFromAsset(mActivity.getFontManager(), fontStroke, mActivity.getAssets(), "Montserrat-Regular.ttf", 36, true, Color.WHITE_ARGB_PACKED_INT, 1, Color.BLACK_ARGB_PACKED_INT);
         montserrat.load();
+
+        try {
+            SoundFactory.setAssetBasePath("sfx/");
+            soundClick = SoundFactory.createSoundFromAsset(mActivity.getSoundManager(), mActivity, "click.mp3");
+
+        } catch (IOException e) {
+            throw new RuntimeException("Error while loading audio", e);
+        }
     }
 
     public void unloadMainManuResources(){

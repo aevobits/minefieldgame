@@ -237,7 +237,11 @@ public class GameActivity extends MineFieldBaseGameActivity {
             soundToPlay.stop();
         }
     }
-
+/*
+    public boolean isPlaying(Sound soundToCheck){
+        if (soundToCheck.)
+    }
+*/
     public final Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             if(msg.arg1 == 1) {
