@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Campo Minato</string>
+
+    <string name="quitTitle">Sei Sicuro?</string>
+    <string name="quitTxt">Vuoi abbandonare il gioco, sei sicuro?</string>
+    <string name="exitTitle">Sei Sicuro?</string>
+    <string name="exitTxt">Vuoi uscire, sei sicuro??</string>
+    <string name="yes">Si</string>
+    <string name="no">No</string>
+    <string name="ad">Ad abilitato</string>
+    <string name="sign_in_failed">Failed to sign in. Please check your network connection and try again.</string>
+    <string name="app_misconfigured">The application is incorrectly configured. Check that the package name and signing certificate match the client ID created in Developer Console. Also, if the application is not yet published, check that the account you are trying to sign in with is listed as a tester account. See logs for more information.</string>
+    <string name="license_failed">License check failed.</string>
+    <string name="unknown_error">Unknown error.</string>
+
+    <string name="bombs_flag_toast">Hai già messo %1$d bandiere!</string>
+    <string name="share_extra_subject">Scarica!</string>
+    <string name="shate_extra_text">Hi, download this new Game at: https://play.google.com/store/apps?hl=it</string>
+    <string name="share_chooser_text">Share this Game!</string>
+
+    <string name="rules_description">Il gioco consiste in un campo rettangolare (o quadrato) a sua volta suddiviso in tanti piccoli quadrati.
+        Ogni quadrato viene scoperto, cliccando su di esso. Molti quadrati contengono mine: quando viene cliccato un quadrato con una mina
+        essa esploderà e farà terminare il gioco. Se il quadrato cliccato non contiene una mina, possono accadere due eventi.
+        Se nel quadrato appare un numero, esso indica la quantità di quadrati adiacenti (inclusi quelli in diagonale) che contengono mine.
+        Se non appare nessun numero, in questo caso il gioco scopre automaticamente i quadrati vuoti adiacenti a quello cliccato
+        (fino a quando non conterranno un numero). Si vince la partita quando tutti i quadrati che non contengono mine saranno scoperti.</string>
+    <string name="howToPlay">How To Play?</string>
+</resources>
