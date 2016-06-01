@@ -78,6 +78,7 @@ public class ResourceManager {
     public ITextureRegion rateTextureRegion;
     public ITextureRegion rulesTextureRegion;
     public ITextureRegion rulesBoardTextureRegion;
+    public ITextureRegion statsBoardTextureRegion;
     public ITexture fontStroke;
 
     private BuildableBitmapTextureAtlas mSubBitmapTextureAtlas;
@@ -190,6 +191,8 @@ public class ResourceManager {
                 mainMenuTextureAtlas, mActivity.getAssets(), "rules.png");
         rulesBoardTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
                 mainMenuTextureAtlas, mActivity.getAssets(), "rulesBoard.png");
+        statsBoardTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
+                mainMenuTextureAtlas, mActivity.getAssets(), "statistics.png");
         mSubmenuTextureAtlas.load();
 
         try {

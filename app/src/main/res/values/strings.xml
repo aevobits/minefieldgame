@@ -26,4 +26,10 @@
         \n\nThe player uses this information to deduce the contents of other squares, and may either safely reveal each square or
         mark the square as containing a mine.</string>
     <string name="howToPlay">How To Play?</string>
+    <string name="statistics">Statistics</string>
+
+    <string name="easy">Easy</string>
+    <string name="medium">Medium</string>
+    <string name="hard">Hard</string>
+    <string name="pro">Pro</string>
 </resources>

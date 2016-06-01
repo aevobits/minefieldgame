@@ -23,14 +23,11 @@ public class RulesBoardScene {
 
     private ResourceManager mResourceManager;
     private CameraScene mRulesBoardScene;
-    private MainMenuScene mainMenuScene;
     private SceneManager mSceneManager;
 
     private static final float AUTOWRAP_WIDTH = 645f;
 
-    public RulesBoardScene(MainMenuScene mainMenuScene){
-
-        this.mainMenuScene = mainMenuScene;
+    public RulesBoardScene(){
         this.mResourceManager = ResourceManager.getInstance();
         this.mSceneManager = SceneManager.getInstance();
         this.mRulesBoardScene = new CameraScene(mResourceManager.camera);
@@ -62,19 +59,27 @@ public class RulesBoardScene {
         this.mRulesBoardScene.registerTouchArea(backgroundGameOver);
         this.mRulesBoardScene.attachChild(backgroundGameOver);
 
+        String howToPlay = mResourceManager.mActivity.getString(R.string.howToPlay);
+        Text howToPlayText = new Text(GameActivity.CAMERA_WIDTH / 2,GameActivity.CAMERA_HEIGHT - 50f, mResourceManager.montserrat, howToPlay,
+                new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
+        howToPlayText.setScale(1.5f);
+        howToPlayText.setColor(Color.WHITE);
+        this.mRulesBoardScene.attachChild(howToPlayText);
+
         final Sprite rulesBoardSprite = new Sprite(overX, overY,400, 600, mResourceManager.rulesBoardTextureRegion, mResourceManager.vbom);
-        mRulesBoardScene.attachChild(rulesBoardSprite);
+        this.mRulesBoardScene.attachChild(rulesBoardSprite);
 
         String rulesDescription = mResourceManager.mActivity.getString(R.string.rules_description);
         Text rulesDescriptionText = new Text(GameActivity.CAMERA_WIDTH / 2, (GameActivity.CAMERA_HEIGHT / 2) - 25f, mResourceManager.montserrat,
                 rulesDescription, new TextOptions(AutoWrap.WORDS, AUTOWRAP_WIDTH, HorizontalAlign.LEFT, Text.LEADING_DEFAULT), mResourceManager.vbom);
         if(Locale.getDefault().getLanguage().equals("it")){
-            rulesDescriptionText.setScale(0.52f);
+            rulesDescriptionText.setScale(0.50f);
         }else {
             rulesDescriptionText.setScale(0.55f);
         }
         rulesDescriptionText.setColor(Color.WHITE);
         this.mRulesBoardScene.attachChild(rulesDescriptionText);
+
 
     }
 

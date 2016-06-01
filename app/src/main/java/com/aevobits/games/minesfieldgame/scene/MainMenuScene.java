@@ -28,10 +28,12 @@ public class MainMenuScene extends BaseScene {
 
     private static final int REQUEST_THE_BEST_LEADERBOARD = 37;
     private RulesBoardScene mRulesBoardScene;
+    private StatsBoardScene mStatsBoardScene;
 
     @Override
     public void createScene() {
-        mRulesBoardScene = new RulesBoardScene(this);
+        mRulesBoardScene = new RulesBoardScene();
+        mStatsBoardScene = new StatsBoardScene();
         getBackground().setColor(new Color(0.109803922f, 0.717647059f, 0.921568627f));
 
         float pX = SCREEN_WIDTH / 2;
@@ -272,7 +274,21 @@ public class MainMenuScene extends BaseScene {
         final float finalPX = pX;
         final float finalPY = pY;
 
-        final Sprite stats = new Sprite(pX, pY, 40, 40, mResourceManager.statsTextureRegion, mResourceManager.vbom );
+        final Sprite stats = new Sprite(pX, pY, 40, 40, mResourceManager.statsTextureRegion, mResourceManager.vbom ){
+            @Override
+            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+                switch (pSceneTouchEvent.getAction()) {
+                    case TouchEvent.ACTION_UP: {
+                        mResourceManager.mActivity.playSound(mResourceManager.soundClick);
+                        setChildScene(mStatsBoardScene.getmStatsBoardScene(),false,false, true);
+                        return true;
+                    }
+                    default: {
+                        return true;
+                    }
+                }
+            }
+        };
         attachChild(stats);
         //registerTouchArea(stats);
 

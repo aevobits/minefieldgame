@@ -4,7 +4,7 @@
     <string name="quitTitle">Sei Sicuro?</string>
     <string name="quitTxt">Vuoi abbandonare il gioco, sei sicuro?</string>
     <string name="exitTitle">Sei Sicuro?</string>
-    <string name="exitTxt">Vuoi uscire, sei sicuro??</string>
+    <string name="exitTxt">Vuoi uscire, sei sicuro?</string>
     <string name="yes">Si</string>
     <string name="no">No</string>
     <string name="ad">Ad abilitato</string>
@@ -24,5 +24,11 @@
         Se nel quadrato appare un numero, esso indica la quantità di quadrati adiacenti (inclusi quelli in diagonale) che contengono mine.
         Se non appare nessun numero, in questo caso il gioco scopre automaticamente i quadrati vuoti adiacenti a quello cliccato
         (fino a quando non conterranno un numero). Si vince la partita quando tutti i quadrati che non contengono mine saranno scoperti.</string>
-    <string name="howToPlay">How To Play?</string>
+    <string name="howToPlay">Come Si Gioca?</string>
+    <string name="statistics">Statistiche</string>
+
+    <string name="easy">Facile</string>
+    <string name="medium">Medio</string>
+    <string name="hard">Difficile</string>
+    <string name="pro">Pro</string>
 </resources>
