@@ -1,4 +1,4 @@
-package com.aevobits.games.minesfieldgame;
+package com.aevobits.games.minesfieldgame.util;
 
 import org.andengine.entity.Entity;
 import org.andengine.entity.modifier.AlphaModifier;
