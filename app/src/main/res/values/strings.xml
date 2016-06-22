@@ -5,6 +5,8 @@
     <string name="quitTxt">Are you sure you want to leave the game?</string>
     <string name="exitTitle">Are you sure?</string>
     <string name="exitTxt">Are you sure you want to exit?</string>
+    <string name="replayTitle">Are you sure?</string>
+    <string name="replayTxt">Are you sure you want to start a new game?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="ad">Ad enabled</string>
@@ -29,7 +31,13 @@
     <string name="statistics">Statistics</string>
 
     <string name="easy">Easy</string>
-    <string name="medium">Medium</string>
+    <string name="intermediate">Intermediate</string>
     <string name="hard">Hard</string>
     <string name="pro">Pro</string>
+
+    <string name="gamePlayed">Played:</string>
+    <string name="gameWon">Won:</string>
+    <string name="percentageWon">% Won:</string>
+
+    <string name="hiScore">Score:</string>
 </resources>

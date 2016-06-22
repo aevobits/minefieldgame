@@ -189,7 +189,7 @@ public class MapManager {
         }
         Tile tile = new Tile(pX, pY, row, col, width, height, textureRegion, res.mActivity.getVertexBufferObjectManager());
         this.gameScene.attachChild(tile);
-        res.mActivity.playSound(res.soundFlip);
+        //res.mActivity.playSound(res.soundFlip);
 
     }
 

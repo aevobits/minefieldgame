@@ -6,8 +6,10 @@ import android.util.Log;
 
 import com.aevobits.games.minesfieldgame.BuildConfig;
 import com.aevobits.games.minesfieldgame.GameActivity;
+import com.aevobits.games.minesfieldgame.R;
 import com.aevobits.games.minesfieldgame.ResourceManager;
 import com.aevobits.games.minesfieldgame.scene.MapManager;
+import com.aevobits.games.minesfieldgame.util.UtilsGPS;
 import com.google.android.gms.games.Games;
 
 import org.andengine.entity.sprite.Sprite;
@@ -74,8 +76,10 @@ public class Tile extends Sprite{
                 if(click) {
                     if (!mapManager.bombsMap[row][col]) {
                         if (mapManager.map[row][col] == 0) {
+                            mActivity.playSound(mResourceManager.soundFlip);
                             mapManager.freeTiles(row, col, x, y, this.pWidth, this.pHeight, mapManager.flagsBombs, mapManager.mBombsHudText);
                         } else {
+                            mActivity.playSound(mResourceManager.soundFlip);
                             mapManager.switchTile(row, col, x, y, this.pWidth, this.pHeight);
                             mapManager.shownMap[row][col] = true;
 
@@ -87,19 +91,20 @@ public class Tile extends Sprite{
                         mapManager.flagMap[row][col] = false;
 
                         if(mapManager.hasWon()){
+                            mActivity.playSound(mResourceManager.soundTada);
                             mapManager.setGameOver(true);
                             mapManager.setWin(true);
-                            mActivity.setGamesWon(mActivity.getGamesWon(MapManager.getInstance().level) + 1, MapManager.getInstance().level);
+                            mActivity.setGamesWon(mActivity.getGamesWon(mapManager.level) + 1, mapManager.level);
+                            UtilsGPS.unlockAchievement(mActivity, mapManager.level);
                             mapManager.newScore = secondsToScore(mapManager.seconds);
-                            if(mapManager.newScore>mResourceManager.mActivity.getHiscore()){
-                                mResourceManager.mActivity.setHiScore(mapManager.newScore);
-                                //if(mActivity.getGameHelper().isSignedIn())
-                                //    Games.Leaderboards.submitScoreImmediate(mActivity.getApiClient(), "CgkIoq7_rKsbEAIQAQ", mapManager.newScore);
+                            if(mapManager.newScore>mActivity.getHiscore(mapManager.level)){
+                                mResourceManager.mActivity.setHiScore(mapManager.newScore, mapManager.level);
+                                UtilsGPS.submitScoreToLeaderboard(mActivity, mapManager.level, mActivity.getHiscore(mapManager.level));
                             }
                         }
                     } else {
                         mapManager.switchBombs(this.pWidth, this.pHeight);
-                        mResourceManager.mActivity.playSound(mResourceManager.soundExplosion);
+                        mActivity.playSound(mResourceManager.soundExplosion);
                         mapManager.newScore = secondsToScore(mapManager.seconds);
                         mapManager.setGameOver(true);
                         mapManager.setWin(false);
@@ -128,14 +133,15 @@ public class Tile extends Sprite{
                         }
                     }
                     if (mapManager.hasWon()) {
+                        mActivity.playSound(mResourceManager.soundTada);
                         mapManager.setGameOver(true);
                         mapManager.setWin(true);
-                        mActivity.setGamesWon(mActivity.getGamesWon(MapManager.getInstance().level) + 1, MapManager.getInstance().level);
+                        mActivity.setGamesWon(mActivity.getGamesWon(mapManager.level) + 1, mapManager.level);
+                        UtilsGPS.unlockAchievement(mActivity, mapManager.level);
                         mapManager.newScore = secondsToScore(mapManager.seconds);
-                        if (mapManager.newScore > mResourceManager.mActivity.getHiscore()) {
-                            mResourceManager.mActivity.setHiScore(mapManager.newScore);
-                            //if(mActivity.getGameHelper().isSignedIn())
-                            //    Games.Leaderboards.submitScoreImmediate(mActivity.getApiClient(), "CgkIoq7_rKsbEAIQAQ", mapManager.newScore);
+                        if(mapManager.newScore>mActivity.getHiscore(mapManager.level)){
+                            mResourceManager.mActivity.setHiScore(mapManager.newScore, mapManager.level);
+                            UtilsGPS.submitScoreToLeaderboard(mActivity, mapManager.level, mActivity.getHiscore(mapManager.level));
                         }
                     }
 

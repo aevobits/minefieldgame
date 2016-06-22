@@ -19,10 +19,9 @@ import java.util.Locale;
 /**
  * Created by vito on 26/05/16.
  */
-public class RulesBoardScene {
+public class RulesBoardScene extends BaseScene{
 
     private ResourceManager mResourceManager;
-    private CameraScene mRulesBoardScene;
     private SceneManager mSceneManager;
 
     private static final float AUTOWRAP_WIDTH = 645f;
@@ -30,8 +29,27 @@ public class RulesBoardScene {
     public RulesBoardScene(){
         this.mResourceManager = ResourceManager.getInstance();
         this.mSceneManager = SceneManager.getInstance();
-        this.mRulesBoardScene = new CameraScene(mResourceManager.camera);
         createRulesBoardScene();
+    }
+
+    @Override
+    public void createScene() {
+
+    }
+
+    @Override
+    public void onBackKeyPressed() {
+
+    }
+
+    @Override
+    public SceneManager.SceneType getSceneType() {
+        return SceneManager.SceneType.SCENE_RULES_BOARD;
+    }
+
+    @Override
+    public void disposeScene() {
+
     }
 
     private void createRulesBoardScene(){
@@ -39,7 +57,7 @@ public class RulesBoardScene {
         final float overX = GameActivity.CAMERA_WIDTH / 2;
         final float overY = GameActivity.CAMERA_HEIGHT / 2;
 
-        this.mRulesBoardScene.setBackgroundEnabled(false);
+        this.setBackgroundEnabled(false);
         Rectangle backgroundGameOver = new Rectangle(overX, overY,
                 GameActivity.CAMERA_WIDTH, GameActivity.CAMERA_HEIGHT, this.mResourceManager.vbom){
             @Override
@@ -56,18 +74,18 @@ public class RulesBoardScene {
         };
         backgroundGameOver.setColor(new Color(0.004901961f, 0.004901961f, 0.004901961f));
         backgroundGameOver.setAlpha(0.9f);
-        this.mRulesBoardScene.registerTouchArea(backgroundGameOver);
-        this.mRulesBoardScene.attachChild(backgroundGameOver);
+        this.registerTouchArea(backgroundGameOver);
+        this.attachChild(backgroundGameOver);
 
         String howToPlay = mResourceManager.mActivity.getString(R.string.howToPlay);
         Text howToPlayText = new Text(GameActivity.CAMERA_WIDTH / 2,GameActivity.CAMERA_HEIGHT - 50f, mResourceManager.montserrat, howToPlay,
                 new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
         howToPlayText.setScale(1.5f);
         howToPlayText.setColor(Color.WHITE);
-        this.mRulesBoardScene.attachChild(howToPlayText);
+        this.attachChild(howToPlayText);
 
         final Sprite rulesBoardSprite = new Sprite(overX, overY,400, 600, mResourceManager.rulesBoardTextureRegion, mResourceManager.vbom);
-        this.mRulesBoardScene.attachChild(rulesBoardSprite);
+        this.attachChild(rulesBoardSprite);
 
         String rulesDescription = mResourceManager.mActivity.getString(R.string.rules_description);
         Text rulesDescriptionText = new Text(GameActivity.CAMERA_WIDTH / 2, (GameActivity.CAMERA_HEIGHT / 2) - 25f, mResourceManager.montserrat,
@@ -78,12 +96,12 @@ public class RulesBoardScene {
             rulesDescriptionText.setScale(0.55f);
         }
         rulesDescriptionText.setColor(Color.WHITE);
-        this.mRulesBoardScene.attachChild(rulesDescriptionText);
+        this.attachChild(rulesDescriptionText);
 
 
     }
 
-    public CameraScene getmRulesBoardScene() {
-        return mRulesBoardScene;
+    public BaseScene getmRulesBoardScene() {
+        return this;
     }
 }

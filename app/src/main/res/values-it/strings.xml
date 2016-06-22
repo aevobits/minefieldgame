@@ -5,6 +5,8 @@
     <string name="quitTxt">Vuoi abbandonare il gioco, sei sicuro?</string>
     <string name="exitTitle">Sei Sicuro?</string>
     <string name="exitTxt">Vuoi uscire, sei sicuro?</string>
+    <string name="replayTitle">Sei Sicuro?</string>
+    <string name="replayTxt">Vuoi iniziare una nuova partita, sei sicuro?</string>
     <string name="yes">Si</string>
     <string name="no">No</string>
     <string name="ad">Ad abilitato</string>
@@ -28,7 +30,13 @@
     <string name="statistics">Statistiche</string>
 
     <string name="easy">Facile</string>
-    <string name="medium">Medio</string>
+    <string name="intermediate">Intermedio</string>
     <string name="hard">Difficile</string>
     <string name="pro">Pro</string>
+
+    <string name="gamePlayed">Giocate:</string>
+    <string name="gameWon">Vinte:</string>
+    <string name="percentageWon">% Vinte:</string>
+
+    <string name="hiScore">Punti:</string>
 </resources>

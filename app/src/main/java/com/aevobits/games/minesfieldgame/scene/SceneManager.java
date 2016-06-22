@@ -21,7 +21,7 @@ import javax.microedition.khronos.opengles.GL10;
 public class SceneManager {
     private static final SceneManager INSTANCE = new SceneManager();
 
-    public enum SceneType {SCENE_SPLASH, SCENE_MENU, SCENE_GAME}
+    public enum SceneType {SCENE_SPLASH, SCENE_MENU, SCENE_GAME, SCENE_STATS_BOARD, SCENE_RULES_BOARD}
 
     private BaseScene mSplashScene;
     private BaseScene mMenuScene;

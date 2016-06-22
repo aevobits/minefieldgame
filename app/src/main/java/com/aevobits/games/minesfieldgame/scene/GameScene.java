@@ -1,41 +1,23 @@
 package com.aevobits.games.minesfieldgame.scene;
 
-import android.os.Handler;
-import android.os.Message;
-import android.os.SystemClock;
-import android.provider.Settings;
-import android.util.Log;
-import android.widget.Toast;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 
-import com.aevobits.games.minesfieldgame.BuildConfig;
 import com.aevobits.games.minesfieldgame.GameActivity;
 import com.aevobits.games.minesfieldgame.R;
-import com.aevobits.games.minesfieldgame.ResourceManager;
-import com.aevobits.games.minesfieldgame.Utils;
+import com.aevobits.games.minesfieldgame.util.Utils;
 import com.aevobits.games.minesfieldgame.entity.Tile;
-import com.google.android.gms.games.Games;
 
-import org.andengine.engine.camera.hud.HUD;
 import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
-import org.andengine.entity.modifier.FadeInModifier;
-import org.andengine.entity.modifier.FadeOutModifier;
-import org.andengine.entity.modifier.IEntityModifier;
-import org.andengine.entity.modifier.ParallelEntityModifier;
-import org.andengine.entity.modifier.ScaleModifier;
-import org.andengine.entity.modifier.SequenceEntityModifier;
+import org.andengine.entity.primitive.Gradient;
 import org.andengine.entity.primitive.Rectangle;
-import org.andengine.entity.scene.CameraScene;
-import org.andengine.entity.scene.IOnSceneTouchListener;
-import org.andengine.entity.scene.Scene;
+import org.andengine.entity.scene.background.EntityBackground;
 import org.andengine.entity.sprite.Sprite;
-import org.andengine.entity.sprite.TiledSprite;
 import org.andengine.entity.text.Text;
 import org.andengine.entity.text.TextOptions;
 import org.andengine.input.touch.TouchEvent;
-import org.andengine.input.touch.detector.ContinuousHoldDetector;
-import org.andengine.input.touch.detector.HoldDetector;
 import org.andengine.util.adt.align.HorizontalAlign;
 import org.andengine.util.adt.color.Color;
 
@@ -63,9 +45,9 @@ public class GameScene extends BaseScene {
     @Override
     public void createScene() {
         if(MapManager.getInstance().level==1){
-            rows = 5;
-            cols = 5;
-            bombs = 5;
+            rows = 10;
+            cols = 10;
+            bombs = 10;
         }
         if(MapManager.getInstance().level==2){
             rows = 10;
@@ -87,11 +69,15 @@ public class GameScene extends BaseScene {
         createField();
         gameOverScene = new GameOverScene(this);
         fadeIn();
-        mActivity.setGamesPlayed(mActivity.getGamesPlayed(MapManager.getInstance().level) + 1, MapManager.getInstance().level);
+        mActivity.setGamesPlayed(mActivity.getGamesPlayed(mapManager.level) + 1, mapManager.level);
     }
 
     private void createBackground(){
-        getBackground().setColor(new Color(0.109803922f, 0.717647059f, 0.921568627f));
+        Gradient g = new Gradient(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT, mResourceManager.vbom);
+        g.setGradient(new Color(0.68627451f, 0.866666667f, 0.91372549f), new Color(0.109803922f, 0.717647059f, 0.921568627f), 0, 1);
+        //g.setGradient(new Color(0.109803922f, 0.717647059f, 0.921568627f), Color.BLUE, 0, 1);
+        this.setBackground(new EntityBackground(g));
+        //getBackground().setColor(new Color(0.109803922f, 0.717647059f, 0.921568627f));
     }
 
     private void createField(){
@@ -147,8 +133,22 @@ public class GameScene extends BaseScene {
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 if (pSceneTouchEvent.isActionUp()) {
+                    mResourceManager.mActivity.playSound(mResourceManager.soundClick);
+                    mActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            new AlertDialog.Builder(mActivity)
+                                    .setTitle(R.string.quitTitle)
+                                    .setMessage(R.string.quitTxt)
+                                    .setNegativeButton(R.string.no, null)
+                                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 
-                    backToMenu();
+                                        public void onClick(DialogInterface arg0, int arg1) {
+                                            backToMenu();
+                                        }
+                                    }).create().show();
+                        }
+                    });
                 }
                 return true;
             }
@@ -165,7 +165,7 @@ public class GameScene extends BaseScene {
         attachChild(bestScoreText);
 
         Locale current = mActivity.getResources().getConfiguration().locale;
-        float highScore = mResourceManager.mActivity.getHiscore();
+        float highScore = mResourceManager.mActivity.getHiscore(MapManager.getInstance().level);
         String bestScoreString = "" + String.format(current,"%.02f", highScore);
         Text bestScore = new Text(SCREEN_WIDTH / 2, 95f, mResourceManager.montserrat, bestScoreString, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
         bestScore.setScale(0.77f);
@@ -176,7 +176,22 @@ public class GameScene extends BaseScene {
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 if (pSceneTouchEvent.isActionUp()) {
-                    restartGame();
+                    mResourceManager.mActivity.playSound(mResourceManager.soundClick);
+                    mActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            new AlertDialog.Builder(mActivity)
+                                    .setTitle(R.string.replayTitle)
+                                    .setMessage(R.string.replayTxt)
+                                    .setNegativeButton(R.string.no, null)
+                                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+
+                                        public void onClick(DialogInterface arg0, int arg1) {
+                                            restartGame();
+                                        }
+                                    }).create().show();
+                        }
+                    });
                 }
                 return true;
             }
@@ -235,7 +250,7 @@ public class GameScene extends BaseScene {
         registerUpdateHandler(timer);
 
         // for debug purpose only
-        //mapManager.switchBombs(tileDimension, tileDimension);
+        mapManager.switchBombs(tileDimension, tileDimension);
     }
 
     public void restartGame(){

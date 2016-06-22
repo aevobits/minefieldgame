@@ -8,9 +8,9 @@ import android.os.Message;
 import android.widget.Toast;
 
 import com.aevobits.games.minesfieldgame.scene.BaseScene;
-import com.aevobits.games.minesfieldgame.scene.GameScene;
-import com.aevobits.games.minesfieldgame.scene.MapManager;
+import com.aevobits.games.minesfieldgame.scene.RulesBoardScene;
 import com.aevobits.games.minesfieldgame.scene.SceneManager;
+import com.aevobits.games.minesfieldgame.scene.StatsBoardScene;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.example.games.basegameutils.MineFieldBaseGameActivity;
@@ -24,7 +24,6 @@ import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.FillResolutionPolicy;
 import org.andengine.engine.options.resolutionpolicy.IResolutionPolicy;
 import org.andengine.entity.scene.Scene;
-import org.andengine.ui.activity.BaseGameActivity;
 
 import java.io.IOException;
 
@@ -38,17 +37,6 @@ public class GameActivity extends MineFieldBaseGameActivity {
     public static final int CAMERA_WIDTH = 480;
     public static final int CAMERA_HEIGHT = 800;
 
-    public static final String KEY_SOUND = "Sound";
-    public static final String KEY_HISCORE = "HiScore";
-    public static final String KEY_GAMES_PLAYED_1 = "GamesPlayed1";
-    public static final String KEY_GAMES_PLAYED_2 = "GamesPlayed2";
-    public static final String KEY_GAMES_PLAYED_3 = "GamesPlayed3";
-    public static final String KEY_GAMES_PLAYED_4 = "GamesPlayed4";
-    public static final String KEY_GAMES_WON_1 = "GamesWon1";
-    public static final String KEY_GAMES_WON_2 = "GamesWon2";
-    public static final String KEY_GAMES_WON_3 = "GamesWon3";
-    public static final String KEY_GAMES_WON_4 = "GamesWon4";
-
     private SharedPreferences settings;
 
     private SceneManager mSceneManager;
@@ -57,8 +45,10 @@ public class GameActivity extends MineFieldBaseGameActivity {
     @Override
     public EngineOptions onCreateEngineOptions() {
         //getGameHelper().setConnectOnStart(false);
-        settings = getSharedPreferences("minesfieldgame_prefs", MODE_PRIVATE);
-        //resetScore();
+        settings = getSharedPreferences("com.aevobits.games.minesfieldgame.prefs", MODE_PRIVATE);
+        resetScore();
+        resetGamesPlayed();
+        resetGamesWon();
         Camera camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
         IResolutionPolicy resolutionPolicy = new FillResolutionPolicy();
         EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.PORTRAIT_FIXED, resolutionPolicy, camera);
@@ -106,124 +96,69 @@ public class GameActivity extends MineFieldBaseGameActivity {
 
     public void setSound(boolean sound){
         SharedPreferences.Editor settingsEditor = settings.edit();
-        settingsEditor.putBoolean(KEY_SOUND, sound);
+        settingsEditor.putBoolean("Sound", sound);
         settingsEditor.commit();
     }
 
     public boolean isSound(){
-        return settings.getBoolean(KEY_SOUND, true);
+        return settings.getBoolean("Sound", true);
     }
 
-    public void setHiScore(float score){
+    public void setHiScore(float score, int level){
         SharedPreferences.Editor settingsEditor = settings.edit();
-        settingsEditor.putFloat(KEY_HISCORE, score);
+        settingsEditor.putFloat("HiScore" + level, score);
         settingsEditor.commit();
     }
 
-    public float getHiscore(){
-        return settings.getFloat(KEY_HISCORE, 0f);
+    public float getHiscore(int level){
+        return settings.getFloat("HiScore" + level, 0f);
     }
 
     public void resetScore(){
         SharedPreferences.Editor settingsEditor = settings.edit();
-        settingsEditor.putFloat(KEY_HISCORE, 0f);
+        settingsEditor.putFloat("HiScore1", 0f);
+        settingsEditor.putFloat("HiScore2", 0f);
+        settingsEditor.putFloat("HiScore3", 0f);
+        settingsEditor.putFloat("HiScore4", 0f);
         settingsEditor.commit();
     }
 
     public void setGamesPlayed(int gamesPlayed, int level){
         SharedPreferences.Editor settingsEditor = settings.edit();
-        switch (level){
-            case 1:{
-                settingsEditor.putInt(KEY_GAMES_PLAYED_1, gamesPlayed);
-                break;
-            }
-            case 2:{
-                settingsEditor.putInt(KEY_GAMES_PLAYED_2, gamesPlayed);
-                break;
-            }
-            case 3:{
-                settingsEditor.putInt(KEY_GAMES_PLAYED_3, gamesPlayed);
-                break;
-            }
-            case 4:{
-                settingsEditor.putInt(KEY_GAMES_PLAYED_4, gamesPlayed);
-                break;
-            }
-        }
-
+        settingsEditor.putInt("GamesPlayed" + level, gamesPlayed);
         settingsEditor.commit();
     }
 
     public int getGamesPlayed(int level){
-        int gamesPlayed = 0;
-        switch (level){
-            case 1:{
-                gamesPlayed = settings.getInt(KEY_GAMES_PLAYED_1, 0);
-                break;
-            }
-            case 2:{
-                gamesPlayed = settings.getInt(KEY_GAMES_PLAYED_2, 0);
-                break;
-            }
-            case 3:{
-                gamesPlayed = settings.getInt(KEY_GAMES_PLAYED_3, 0);
-                break;
-            }
-            case 4:{
-                gamesPlayed = settings.getInt(KEY_GAMES_PLAYED_4, 0);
-                break;
-            }
-        }
+        return settings.getInt("GamesPlayed" + level, 0);
+    }
 
-        return gamesPlayed;
+    public void resetGamesPlayed(){
+        SharedPreferences.Editor settingsEditor = settings.edit();
+        settingsEditor.putInt("GamesPlayed1", 0);
+        settingsEditor.putInt("GamesPlayed2", 0);
+        settingsEditor.putInt("GamesPlayed3", 0);
+        settingsEditor.putInt("GamesPlayed4", 0);
+        settingsEditor.commit();
     }
 
     public void setGamesWon(int gamesWon, int level){
         SharedPreferences.Editor settingsEditor = settings.edit();
-        switch (level){
-            case 1:{
-                settingsEditor.putInt(KEY_GAMES_WON_1, gamesWon);
-                break;
-            }
-            case 2:{
-                settingsEditor.putInt(KEY_GAMES_WON_2, gamesWon);
-                break;
-            }
-            case 3:{
-                settingsEditor.putInt(KEY_GAMES_WON_3, gamesWon);
-                break;
-            }
-            case 4:{
-                settingsEditor.putInt(KEY_GAMES_WON_4, gamesWon);
-                break;
-            }
-        }
-
+        settingsEditor.putInt("GamesWon" + level, gamesWon);
         settingsEditor.commit();
     }
 
     public int getGamesWon(int level){
-        int gamesWon = 0;
-        switch (level){
-            case 1:{
-                gamesWon = settings.getInt(KEY_GAMES_WON_1, 0);
-                break;
-            }
-            case 2:{
-                gamesWon = settings.getInt(KEY_GAMES_WON_2, 0);
-                break;
-            }
-            case 3:{
-                gamesWon = settings.getInt(KEY_GAMES_WON_3, 0);
-                break;
-            }
-            case 4:{
-                gamesWon = settings.getInt(KEY_GAMES_WON_4, 0);
-                break;
-            }
-        }
+        return settings.getInt("GamesWon" + level, 0);
+    }
 
-        return gamesWon;
+    public void resetGamesWon(){
+        SharedPreferences.Editor settingsEditor = settings.edit();
+        settingsEditor.putInt("GamesWon1", 0);
+        settingsEditor.putInt("GamesWon2", 0);
+        settingsEditor.putInt("GamesWon3", 0);
+        settingsEditor.putInt("GamesWon4", 0);
+        settingsEditor.commit();
     }
 
     public void playSound(Sound soundToPlay){
@@ -266,7 +201,6 @@ public class GameActivity extends MineFieldBaseGameActivity {
     @Override
     public void onBackPressed() {
         final BaseScene baseScene = ((BaseScene) this.getEngine().getScene());
-
         if(baseScene.getSceneType() == SceneManager.SceneType.SCENE_GAME){
             new AlertDialog.Builder(this)
                     .setTitle(R.string.quitTitle)
@@ -281,16 +215,25 @@ public class GameActivity extends MineFieldBaseGameActivity {
                         }
                     }).create().show();
         }else if(baseScene.getSceneType() == SceneManager.SceneType.SCENE_MENU){
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.exitTitle)
-                    .setMessage(R.string.exitTxt)
-                    .setNegativeButton(R.string.no, null)
-                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            if ((baseScene.getChildScene() instanceof RulesBoardScene) ||
+                    (baseScene.getChildScene() instanceof StatsBoardScene)){
 
-                        public void onClick(DialogInterface arg0, int arg1) {
-                            finish();
-                        }
-                    }).create().show();
+                baseScene.disposeScene();
+                mResourceManager.loadMainManuResources();
+                mSceneManager.setScene(SceneManager.SceneType.SCENE_MENU);
+
+            }else {
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.exitTitle)
+                        .setMessage(R.string.exitTxt)
+                        .setNegativeButton(R.string.no, null)
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                finish();
+                            }
+                        }).create().show();
+            }
         }
 
     }
@@ -309,7 +252,8 @@ public class GameActivity extends MineFieldBaseGameActivity {
     protected void onSetContentView() {
         super.onSetContentView();
         AdView mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice("043E555F988D1CEBF136C59FD0DD2C9B").build();
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("043E555F988D1CEBF136C59FD0DD2C9B")
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build();
         mAdView.loadAd(adRequest);
     }
 }

@@ -2,11 +2,9 @@ package com.aevobits.games.minesfieldgame.scene;
 
 import com.aevobits.games.minesfieldgame.GameActivity;
 import com.aevobits.games.minesfieldgame.ResourceManager;
-import com.aevobits.games.minesfieldgame.Utils;
+import com.aevobits.games.minesfieldgame.util.Utils;
 
 import org.andengine.entity.Entity;
-import org.andengine.entity.modifier.AlphaModifier;
-import org.andengine.entity.modifier.IEntityModifier;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.CameraScene;
 import org.andengine.entity.sprite.Sprite;
@@ -18,9 +16,6 @@ import org.andengine.util.adt.color.Color;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-
-import javax.microedition.khronos.opengles.GL10;
 
 /**
  * Created by vito on 22/04/16.
@@ -65,8 +60,7 @@ public class GameOverScene {
         mGameOverScene.attachChild(gameOverText);
         entityList.add(gameOverText);
 
-        Locale current = mResourceManager.mActivity.getResources().getConfiguration().locale;
-        gameOverTextScore = new Text(overX, overY, mResourceManager.montserrat, "punteggio: " + String.format(current,"%.02f", 123456789.123456789f), new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
+        gameOverTextScore = new Text(overX, overY, mResourceManager.montserrat, "punteggio: " + String.format(mResourceManager.locale,"%.02f", 123456789.123456789f), new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
         gameOverTextScore.setScale(0.8f);
         gameOverTextScore.setColor(Color.BLACK);
         gameOverTextScore.setVisible(false);

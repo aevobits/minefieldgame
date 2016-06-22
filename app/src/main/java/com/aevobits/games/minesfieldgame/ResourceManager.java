@@ -25,6 +25,7 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.adt.color.Color;
 
 import java.io.IOException;
+import java.util.Locale;
 
 /**
  * Created by vito on 01/03/16.
@@ -97,6 +98,9 @@ public class ResourceManager {
     public Sound soundExplosion;
     public Sound soundFlip;
     public Sound soundClick;
+    public Sound soundTada;
+
+    public Locale locale;
 
 
     private static final ResourceManager INSTANCE = new ResourceManager();
@@ -120,6 +124,8 @@ public class ResourceManager {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         display.getMetrics(displayMetrics);
         density = (int)(displayMetrics.density);
+
+        this.locale = this.mActivity.getResources().getConfiguration().locale;
 
         FontFactory.setAssetBasePath("font/");
     }
@@ -275,14 +281,7 @@ public class ResourceManager {
                 gameTextureAtlas, mActivity.getAssets(), "replay.png");
 
         mSubBitmapTextureAtlas = new BuildableBitmapTextureAtlas(mActivity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);
-        /*
-        mStateTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(
-                mSubBitmapTextureAtlas, mActivity, "ready_over.png", 0, 0, 2, 1);
-        mButtonTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(
-                mSubBitmapTextureAtlas, mActivity, "play_pos.png", 0, 350, 2, 1);
-        */
-        mPlayTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
-                mSubBitmapTextureAtlas, mActivity.getAssets(), "play.png");
+
         gameOverTextTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
                 mSubBitmapTextureAtlas, mActivity.getAssets(), "gameOverText.png");
         gameOverYesTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
@@ -313,6 +312,7 @@ public class ResourceManager {
             SoundFactory.setAssetBasePath("sfx/");
             soundExplosion = SoundFactory.createSoundFromAsset(mActivity.getSoundManager(), mActivity, "explosion.mp3");
             soundFlip = SoundFactory.createSoundFromAsset(mActivity.getSoundManager(), mActivity, "flip.mp3");
+            soundTada = SoundFactory.createSoundFromAsset(mActivity.getSoundManager(), mActivity, "tada.mp3");
 
         } catch (IOException e) {
             throw new RuntimeException("Error while loading audio", e);
