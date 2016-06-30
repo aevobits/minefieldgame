@@ -1,4 +1,4 @@
-package com.aevobits.games.minesfieldgame;
+package com.aevobits.games.minesfield;
 
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -65,6 +65,8 @@ public class ResourceManager {
 
     private BuildableBitmapTextureAtlas mainMenuTextureAtlas;
     private BitmapTextureAtlas mSubmenuTextureAtlas;
+    public ITextureRegion titleITTextureRegion;
+    public ITextureRegion titleENTextureRegion;
     public ITextureRegion buttonLevelTextureRegion;
     public ITextureRegion buttonEasyLevelTextureRegion;
     public ITextureRegion buttonMediumLevelTextureRegion;
@@ -168,8 +170,12 @@ public class ResourceManager {
         mainMenuTextureAtlas = new BuildableBitmapTextureAtlas(mActivity.getTextureManager(),
                 1024, 1024, BitmapTextureFormat.RGBA_8888,
                 TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        buttonLevelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
-                mainMenuTextureAtlas, mActivity.getAssets(), "level.png");
+        titleITTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
+                mainMenuTextureAtlas, mActivity.getAssets(), "campoMinato.png");
+        titleENTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
+                mainMenuTextureAtlas, mActivity.getAssets(), "mineSweeper.png");
+        //buttonLevelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
+        //        mainMenuTextureAtlas, mActivity.getAssets(), "level.png");
         buttonEasyLevelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
                 mainMenuTextureAtlas, mActivity.getAssets(), "level1.png");
         buttonMediumLevelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(

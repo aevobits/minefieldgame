@@ -1,6 +1,6 @@
-package com.aevobits.games.minesfieldgame.entity;
+package com.aevobits.games.minesfield.entity;
 
-import com.aevobits.games.minesfieldgame.GameActivity;
+import com.aevobits.games.minesfield.GameActivity;
 
 import org.andengine.entity.Entity;
 import org.andengine.opengl.texture.region.ITextureRegion;

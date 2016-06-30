@@ -1,12 +1,13 @@
-package com.aevobits.games.minesfieldgame.scene;
+package com.aevobits.games.minesfield.scene;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 
-import com.aevobits.games.minesfieldgame.GameActivity;
-import com.aevobits.games.minesfieldgame.R;
-import com.aevobits.games.minesfieldgame.util.Utils;
-import com.aevobits.games.minesfieldgame.entity.Tile;
+import com.aevobits.games.minesfield.GameActivity;
+import com.aevobits.games.minesfield.R;
+import com.aevobits.games.minesfield.util.PlayerDataManagement;
+import com.aevobits.games.minesfield.util.Utils;
+import com.aevobits.games.minesfield.entity.Tile;
 
 import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.engine.handler.timer.ITimerCallback;
@@ -28,6 +29,7 @@ import java.util.Locale;
  */
 public class GameScene extends BaseScene {
 
+    private static final String TAG = PlayerDataManagement.class.getSimpleName();
     private MapManager mapManager;
 
     private float tileDimension = 60f;
@@ -70,14 +72,15 @@ public class GameScene extends BaseScene {
         gameOverScene = new GameOverScene(this);
         fadeIn();
         mActivity.setGamesPlayed(mActivity.getGamesPlayed(mapManager.level) + 1, mapManager.level);
+        //int played = Integer.parseInt(PlayerDataManagement.getInstance(mActivity).loadPlayerData("GamesPlayed" + mapManager.level));
+        //Log.e(TAG, "Games Played:" + played);
+
     }
 
     private void createBackground(){
         Gradient g = new Gradient(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT, mResourceManager.vbom);
         g.setGradient(new Color(0.68627451f, 0.866666667f, 0.91372549f), new Color(0.109803922f, 0.717647059f, 0.921568627f), 0, 1);
-        //g.setGradient(new Color(0.109803922f, 0.717647059f, 0.921568627f), Color.BLUE, 0, 1);
         this.setBackground(new EntityBackground(g));
-        //getBackground().setColor(new Color(0.109803922f, 0.717647059f, 0.921568627f));
     }
 
     private void createField(){
@@ -129,7 +132,7 @@ public class GameScene extends BaseScene {
 
 
 
-        Sprite homeSprite = new Sprite(82f, 110f,50, 50, mResourceManager.homeTextureRegion, mResourceManager.vbom){
+        Sprite homeSprite = new Sprite(82f, 110f,64, 64, mResourceManager.homeTextureRegion, mResourceManager.vbom){
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 if (pSceneTouchEvent.isActionUp()) {
@@ -172,7 +175,7 @@ public class GameScene extends BaseScene {
         bestScore.setColor(Color.BLACK);
         attachChild(bestScore);
 
-        Sprite replayArrowSprite = new Sprite((SCREEN_WIDTH)-82f, 110f,50, 50, mResourceManager.replayTextureRegion, mResourceManager.vbom){
+        Sprite replayArrowSprite = new Sprite((SCREEN_WIDTH)-82f, 110f,64, 64, mResourceManager.replayTextureRegion, mResourceManager.vbom){
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 if (pSceneTouchEvent.isActionUp()) {
@@ -233,24 +236,14 @@ public class GameScene extends BaseScene {
             @Override
             public void onTimePassed(TimerHandler pTimerHandler) {
                 mapManager.seconds++;
-                /*
-                if(mapManager.seconds==110){
-                    unregisterUpdateHandler(gameUpdateHandler);
-                    String text = "Tempo Scaduto!";
-                    gameOverScene.setGameOverText(text);
-                    gameOverScene.setGameOverTextScale(0.8f);
-                    setChildScene(gameOverScene.getmGameOverScene(), false, true, true);
-                }else{
-                */
-                    String time = Utils.secondsToString(mapManager.seconds);
-                    mTimerHudText.setText(time);
-                //}
+                String time = Utils.secondsToString(mapManager.seconds);
+                mTimerHudText.setText(time);
             }
         });
         registerUpdateHandler(timer);
 
         // for debug purpose only
-        mapManager.switchBombs(tileDimension, tileDimension);
+        //mapManager.switchBombs(tileDimension, tileDimension);
     }
 
     public void restartGame(){

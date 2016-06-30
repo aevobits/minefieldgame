@@ -1,10 +1,7 @@
-package com.aevobits.games.minesfieldgame.scene;
+package com.aevobits.games.minesfield.scene;
 
-import android.util.Log;
-
-import com.aevobits.games.minesfieldgame.BuildConfig;
-import com.aevobits.games.minesfieldgame.ResourceManager;
-import com.aevobits.games.minesfieldgame.entity.Tile;
+import com.aevobits.games.minesfield.ResourceManager;
+import com.aevobits.games.minesfield.entity.Tile;
 
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.texture.region.ITextureRegion;

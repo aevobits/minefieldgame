@@ -1,8 +1,6 @@
-package com.aevobits.games.minesfieldgame.scene;
+package com.aevobits.games.minesfield.scene;
 
 import org.andengine.entity.sprite.Sprite;
-import org.andengine.entity.text.Text;
-import org.andengine.util.adt.color.Color;
 
 /**
  * Created by vito on 22/01/16.

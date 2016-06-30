@@ -1,16 +1,14 @@
-package com.aevobits.games.minesfieldgame.entity;
+package com.aevobits.games.minesfield.entity;
 
 import android.os.Message;
 import android.os.SystemClock;
 import android.util.Log;
 
-import com.aevobits.games.minesfieldgame.BuildConfig;
-import com.aevobits.games.minesfieldgame.GameActivity;
-import com.aevobits.games.minesfieldgame.R;
-import com.aevobits.games.minesfieldgame.ResourceManager;
-import com.aevobits.games.minesfieldgame.scene.MapManager;
-import com.aevobits.games.minesfieldgame.util.UtilsGPS;
-import com.google.android.gms.games.Games;
+import com.aevobits.games.minesfield.BuildConfig;
+import com.aevobits.games.minesfield.GameActivity;
+import com.aevobits.games.minesfield.ResourceManager;
+import com.aevobits.games.minesfield.scene.MapManager;
+import com.aevobits.games.minesfield.util.UtilsGPS;
 
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
@@ -76,10 +74,14 @@ public class Tile extends Sprite{
                 if(click) {
                     if (!mapManager.bombsMap[row][col]) {
                         if (mapManager.map[row][col] == 0) {
-                            mActivity.playSound(mResourceManager.soundFlip);
+                            if (!mapManager.shownMap[row][col]) {
+                                mActivity.playSound(mResourceManager.soundFlip);
+                            }
                             mapManager.freeTiles(row, col, x, y, this.pWidth, this.pHeight, mapManager.flagsBombs, mapManager.mBombsHudText);
                         } else {
-                            mActivity.playSound(mResourceManager.soundFlip);
+                            if (!mapManager.shownMap[row][col]) {
+                                mActivity.playSound(mResourceManager.soundFlip);
+                            }
                             mapManager.switchTile(row, col, x, y, this.pWidth, this.pHeight);
                             mapManager.shownMap[row][col] = true;
 
@@ -99,8 +101,8 @@ public class Tile extends Sprite{
                             mapManager.newScore = secondsToScore(mapManager.seconds);
                             if(mapManager.newScore>mActivity.getHiscore(mapManager.level)){
                                 mResourceManager.mActivity.setHiScore(mapManager.newScore, mapManager.level);
-                                UtilsGPS.submitScoreToLeaderboard(mActivity, mapManager.level, mActivity.getHiscore(mapManager.level));
                             }
+                            UtilsGPS.submitScoreToLeaderboard(mActivity, mapManager.level, mActivity.getHiscore(mapManager.level));
                         }
                     } else {
                         mapManager.switchBombs(this.pWidth, this.pHeight);
@@ -141,8 +143,8 @@ public class Tile extends Sprite{
                         mapManager.newScore = secondsToScore(mapManager.seconds);
                         if(mapManager.newScore>mActivity.getHiscore(mapManager.level)){
                             mResourceManager.mActivity.setHiScore(mapManager.newScore, mapManager.level);
-                            UtilsGPS.submitScoreToLeaderboard(mActivity, mapManager.level, mActivity.getHiscore(mapManager.level));
                         }
+                        UtilsGPS.submitScoreToLeaderboard(mActivity, mapManager.level, mActivity.getHiscore(mapManager.level));
                     }
 
                     return true;

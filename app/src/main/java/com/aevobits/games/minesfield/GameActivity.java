@@ -1,4 +1,4 @@
-package com.aevobits.games.minesfieldgame;
+package com.aevobits.games.minesfield;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -7,10 +7,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.widget.Toast;
 
-import com.aevobits.games.minesfieldgame.scene.BaseScene;
-import com.aevobits.games.minesfieldgame.scene.RulesBoardScene;
-import com.aevobits.games.minesfieldgame.scene.SceneManager;
-import com.aevobits.games.minesfieldgame.scene.StatsBoardScene;
+import com.aevobits.games.minesfield.scene.BaseScene;
+import com.aevobits.games.minesfield.scene.RulesBoardScene;
+import com.aevobits.games.minesfield.scene.SceneManager;
+import com.aevobits.games.minesfield.scene.StatsBoardScene;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.example.games.basegameutils.MineFieldBaseGameActivity;
@@ -44,11 +44,10 @@ public class GameActivity extends MineFieldBaseGameActivity {
 
     @Override
     public EngineOptions onCreateEngineOptions() {
-        //getGameHelper().setConnectOnStart(false);
         settings = getSharedPreferences("com.aevobits.games.minesfieldgame.prefs", MODE_PRIVATE);
-        resetScore();
-        resetGamesPlayed();
-        resetGamesWon();
+        //resetScore();
+        //resetGamesPlayed();
+        //resetGamesWon();
         Camera camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
         IResolutionPolicy resolutionPolicy = new FillResolutionPolicy();
         EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.PORTRAIT_FIXED, resolutionPolicy, camera);
@@ -60,7 +59,6 @@ public class GameActivity extends MineFieldBaseGameActivity {
 
     @Override
     public void onCreateResources(OnCreateResourcesCallback pOnCreateResourcesCallback) throws IOException {
-       //beginUserInitiatedSignIn();
         mResourceManager = ResourceManager.getInstance();
         mResourceManager.create(this, getEngine(), getEngine().getCamera(), getVertexBufferObjectManager());
         mResourceManager.loadSplashResources();
@@ -237,7 +235,6 @@ public class GameActivity extends MineFieldBaseGameActivity {
         }
 
     }
-
     @Override
     protected int getLayoutID() {
         return R.layout.game_layout;
@@ -256,4 +253,5 @@ public class GameActivity extends MineFieldBaseGameActivity {
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build();
         mAdView.loadAd(adRequest);
     }
+
 }

@@ -1,8 +1,8 @@
-package com.aevobits.games.minesfieldgame.scene;
+package com.aevobits.games.minesfield.scene;
 
-import com.aevobits.games.minesfieldgame.GameActivity;
-import com.aevobits.games.minesfieldgame.ResourceManager;
-import com.aevobits.games.minesfieldgame.util.Utils;
+import com.aevobits.games.minesfield.GameActivity;
+import com.aevobits.games.minesfield.ResourceManager;
+import com.aevobits.games.minesfield.util.Utils;
 
 import org.andengine.entity.Entity;
 import org.andengine.entity.primitive.Rectangle;

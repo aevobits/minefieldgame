@@ -1,4 +1,4 @@
-package com.aevobits.games.minesfieldgame.entity;
+package com.aevobits.games.minesfield.entity;
 
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.opengl.texture.region.ITextureRegion;

@@ -43,7 +43,8 @@ import org.andengine.ui.activity.LayoutGameActivity;
  *
  * @author Bruno Oliveira (Google)
  */
-public abstract class MineFieldBaseGameActivity extends LayoutGameActivity implements
+public abstract class MineFieldBaseGameActivity extends LayoutGameActivity
+        implements
         GameHelper.GameHelperListener {
 
     // The game helper object. This class is mainly a wrapper around this object.
@@ -56,7 +57,7 @@ public abstract class MineFieldBaseGameActivity extends LayoutGameActivity imple
     public static final int CLIENT_ALL = GameHelper.CLIENT_ALL;
 
     // Requested clients. By default, that's just the games client.
-    protected int mRequestedClients = (CLIENT_GAMES | CLIENT_PLUS);
+    protected int mRequestedClients = CLIENT_ALL; //(CLIENT_GAMES | CLIENT_PLUS);
 
     private final static String TAG = "MineFieldBaseGameActivity";
     protected boolean mDebugLog = false;

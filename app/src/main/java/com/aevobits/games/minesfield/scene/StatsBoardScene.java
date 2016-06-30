@@ -1,8 +1,8 @@
-package com.aevobits.games.minesfieldgame.scene;
+package com.aevobits.games.minesfield.scene;
 
-import com.aevobits.games.minesfieldgame.GameActivity;
-import com.aevobits.games.minesfieldgame.R;
-import com.aevobits.games.minesfieldgame.ResourceManager;
+import com.aevobits.games.minesfield.GameActivity;
+import com.aevobits.games.minesfield.R;
+import com.aevobits.games.minesfield.ResourceManager;
 
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.sprite.Sprite;
@@ -99,7 +99,7 @@ public class StatsBoardScene extends BaseScene{
 
         String intermediateTitle = mResourceManager.mActivity.getString(R.string.intermediate);
         Text intermediateTitleText = new Text(345f,640f, mResourceManager.montserrat, intermediateTitle, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
-        intermediateTitleText.setScale(0.9f);
+        intermediateTitleText.setScale(0.8f);
         this.attachChild(intermediateTitleText);
 
         String intermediateGamesPlayedCount = String.valueOf(mActivity.getGamesPlayed(2));

@@ -7,7 +7,7 @@ import android.content.pm.Signature;
 import android.content.res.Resources;
 import android.util.Log;
 
-import com.aevobits.games.minesfieldgame.R;
+import com.aevobits.games.minesfield.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.games.GamesActivityResultCodes;
 

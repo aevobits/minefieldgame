@@ -1,19 +1,6 @@
-package com.aevobits.games.minesfieldgame.scene;
+package com.aevobits.games.minesfield.scene;
 
-import com.aevobits.games.minesfieldgame.ResourceManager;
-
-import org.andengine.entity.IEntity;
-import org.andengine.entity.modifier.AlphaModifier;
-import org.andengine.entity.modifier.FadeInModifier;
-import org.andengine.entity.modifier.FadeOutModifier;
-import org.andengine.entity.modifier.IEntityModifier;
-import org.andengine.entity.modifier.ScaleModifier;
-import org.andengine.entity.modifier.SequenceEntityModifier;
-import org.andengine.entity.primitive.Rectangle;
-import org.andengine.util.adt.color.Color;
-import org.andengine.util.modifier.IModifier;
-
-import javax.microedition.khronos.opengles.GL10;
+import com.aevobits.games.minesfield.ResourceManager;
 
 /**
  * Created by vito on 20/01/16.

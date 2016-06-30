@@ -1,18 +1,14 @@
-package com.aevobits.games.minesfieldgame.util;
+package com.aevobits.games.minesfield.util;
 
 import org.andengine.entity.Entity;
-import org.andengine.entity.modifier.AlphaModifier;
 import org.andengine.entity.modifier.FadeInModifier;
 import org.andengine.entity.modifier.IEntityModifier;
 import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.entity.modifier.ParallelEntityModifier;
 import org.andengine.entity.modifier.ScaleModifier;
-import org.andengine.entity.modifier.SequenceEntityModifier;
 import org.andengine.entity.scene.Scene;
 
 import java.util.List;
-
-import javax.microedition.khronos.opengles.GL10;
 
 /**
  * Created by vito on 08/03/16.
@@ -78,5 +74,9 @@ public class Utils {
         IEntityModifier iem = new ScaleModifier(0.2f, 1.2f, 1f);
         iem.setAutoUnregisterWhenFinished(true);
         entity.registerEntityModifier(iem);
+    }
+
+    public static <T extends Entity> void fadeInFromTopEffect(T entity){
+
     }
 }

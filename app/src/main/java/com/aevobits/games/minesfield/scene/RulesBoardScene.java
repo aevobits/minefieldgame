@@ -1,11 +1,10 @@
-package com.aevobits.games.minesfieldgame.scene;
+package com.aevobits.games.minesfield.scene;
 
-import com.aevobits.games.minesfieldgame.GameActivity;
-import com.aevobits.games.minesfieldgame.R;
-import com.aevobits.games.minesfieldgame.ResourceManager;
+import com.aevobits.games.minesfield.GameActivity;
+import com.aevobits.games.minesfield.R;
+import com.aevobits.games.minesfield.ResourceManager;
 
 import org.andengine.entity.primitive.Rectangle;
-import org.andengine.entity.scene.CameraScene;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.AutoWrap;
 import org.andengine.entity.text.Text;

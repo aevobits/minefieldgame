@@ -1,11 +1,11 @@
-package com.aevobits.games.minesfieldgame.scene;
+package com.aevobits.games.minesfield.scene;
 
 import android.content.Intent;
 import android.net.Uri;
 
-import com.aevobits.games.minesfieldgame.R;
-import com.aevobits.games.minesfieldgame.util.Utils;
-import com.aevobits.games.minesfieldgame.entity.ButtonLevel;
+import com.aevobits.games.minesfield.R;
+import com.aevobits.games.minesfield.util.Utils;
+import com.aevobits.games.minesfield.entity.ButtonLevel;
 import com.google.android.gms.games.Games;
 
 import org.andengine.entity.primitive.Gradient;
@@ -17,6 +17,8 @@ import org.andengine.entity.text.TextOptions;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.util.adt.align.HorizontalAlign;
 import org.andengine.util.adt.color.Color;
+
+import java.util.Locale;
 
 /**
  * Created by vito on 09/03/16.
@@ -30,6 +32,11 @@ public class MainMenuScene extends BaseScene {
 
     @Override
     public void createScene() {
+        //mActivity.getApiClient().disconnect();
+        //mActivity.getApiClient().connect();
+        //Person currentPerson = Plus.PeopleApi.getCurrentPerson(mActivity.getApiClient());
+        //String personName = currentPerson.getDisplayName();
+        //Log.i("MainMenuScene",personName);
         mRulesBoardScene = new RulesBoardScene();
         mStatsBoardScene = new StatsBoardScene();
         Gradient g = new Gradient(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT, mResourceManager.vbom);
@@ -39,11 +46,15 @@ public class MainMenuScene extends BaseScene {
         this.setBackground(new EntityBackground(g));
 
         float pX = SCREEN_WIDTH / 2;
-        float pY = SCREEN_HEIGHT - (SCREEN_HEIGHT / 3);
+        float pY = (SCREEN_HEIGHT - (SCREEN_HEIGHT / 3)) - 20;
 
-        Text textTitle = new Text(pX, pY + 170, mResourceManager.candy_shop_min, "Campo Minato", new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
-        textTitle.setScale(1.9f);
-        attachChild(textTitle);
+        Sprite titleSprite;
+        if(Locale.getDefault().getLanguage().equals("it")) {
+            titleSprite = new Sprite(pX, pY + 170, 350f, 200f, mResourceManager.titleITTextureRegion, mResourceManager.vbom);
+        } else {
+            titleSprite = new Sprite(pX, pY + 170, 350f, 168f, mResourceManager.titleENTextureRegion, mResourceManager.vbom);
+        }
+        attachChild(titleSprite);
 
         ButtonLevel buttonEasyLevel = new ButtonLevel(pX, pY, 1,330, 80, mResourceManager.buttonEasyLevelTextureRegion, mResourceManager.vbom ){
             @Override
@@ -99,7 +110,12 @@ public class MainMenuScene extends BaseScene {
 
         String mediumTitle = mResourceManager.mActivity.getString(R.string.intermediate);
         Text textLevel2 = new Text(pX + 30, pY, mResourceManager.montserrat, mediumTitle, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
-        textLevel2.setScale(1.1f);
+        if(Locale.getDefault().getLanguage().equals("it")) {
+            textLevel2.setScale(1.1f);
+        }else {
+            textLevel2.setScale(1f);
+        }
+
         attachChild(textLevel2);
 
         pY = pY - 90;
@@ -213,6 +229,7 @@ public class MainMenuScene extends BaseScene {
                         Utils.clickUpEffect(this);
                         mResourceManager.mActivity.playSound(mResourceManager.soundClick);
                         Utils.clickDownEffect(this);
+
                         if(mActivity.getGameHelper().isSignedIn()) {
                             final Intent showTheBestIntent = Games.Leaderboards.getAllLeaderboardsIntent(mActivity.getApiClient());
                             mActivity.startActivityForResult(showTheBestIntent, REQUEST_THE_BEST_LEADERBOARD);
@@ -240,6 +257,7 @@ public class MainMenuScene extends BaseScene {
                         Utils.clickUpEffect(this);
                         mResourceManager.mActivity.playSound(mResourceManager.soundClick);
                         Utils.clickDownEffect(this);
+
                         if(mActivity.getGameHelper().isSignedIn()) {
                             final Intent showAchievementIntent = Games.Achievements.getAchievementsIntent(mActivity.getApiClient());
                             mActivity.startActivityForResult(showAchievementIntent, REQUEST_ALL_ACHIEVEMENT);
@@ -318,7 +336,7 @@ public class MainMenuScene extends BaseScene {
                         try {
                             mActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
                         } catch (android.content.ActivityNotFoundException anfe) {
-                            mActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps?hl=it")));
+                            mActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
                             //mActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + appPackageName)));
                         }
 
