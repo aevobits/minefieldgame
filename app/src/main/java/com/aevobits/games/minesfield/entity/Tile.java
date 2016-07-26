@@ -6,12 +6,14 @@ import android.util.Log;
 
 import com.aevobits.games.minesfield.BuildConfig;
 import com.aevobits.games.minesfield.GameActivity;
-import com.aevobits.games.minesfield.ResourceManager;
+import com.aevobits.games.minesfield.manager.ResourceManager;
 import com.aevobits.games.minesfield.scene.MapManager;
+import com.aevobits.games.minesfield.manager.PlayerDataManager;
 import com.aevobits.games.minesfield.util.UtilsGPS;
 
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
+import org.andengine.input.touch.detector.HoldDetector;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
@@ -30,12 +32,6 @@ public class Tile extends Sprite{
     private MapManager mapManager;
     private ResourceManager mResourceManager;
     private GameActivity mActivity;
-
-    private static float timeActionDown = 0;
-    private static float timeActionUp = 0;
-
-    //private ITextureRegion tileTextureRegion;
-
 
     public Tile(float pX, float pY, int row, int col, float pWidth, float pHeight, ITextureRegion tileTextureRegion, VertexBufferObjectManager vbom){
         super(pX, pY, pWidth, pHeight, tileTextureRegion, vbom);
@@ -72,12 +68,20 @@ public class Tile extends Sprite{
                 if(BuildConfig.DEBUG) Log.v("ElapsedTime:", elapsedTime + "");
                 boolean click = (Float.compare(elapsedTime,400.0f)<=0);
                 if(click) {
+                    if (mapManager.flagMap[row][col]) {
+
+                        mapManager.switchFlag(row, col, x, y, this.pWidth, this.pHeight, false);
+                        mapManager.flagMap[row][col] = false;
+                        mapManager.flagsBombs++;
+                        mapManager.mBombsHudText.setText(String.valueOf(mapManager.flagsBombs));
+                        return true;
+                    }
                     if (!mapManager.bombsMap[row][col]) {
                         if (mapManager.map[row][col] == 0) {
                             if (!mapManager.shownMap[row][col]) {
                                 mActivity.playSound(mResourceManager.soundFlip);
                             }
-                            mapManager.freeTiles(row, col, x, y, this.pWidth, this.pHeight, mapManager.flagsBombs, mapManager.mBombsHudText);
+                            mapManager.freeTiles(row, col, x, y, this.pWidth, this.pHeight, mapManager.mBombsHudText);
                         } else {
                             if (!mapManager.shownMap[row][col]) {
                                 mActivity.playSound(mResourceManager.soundFlip);
@@ -96,16 +100,23 @@ public class Tile extends Sprite{
                             mActivity.playSound(mResourceManager.soundTada);
                             mapManager.setGameOver(true);
                             mapManager.setWin(true);
-                            mActivity.setGamesWon(mActivity.getGamesWon(mapManager.level) + 1, mapManager.level);
+                            int level = mapManager.level;
+                            Integer won = Integer.parseInt(PlayerDataManager.getInstance().getData("GamesWon" + level)) + 1;
+                            PlayerDataManager.getInstance().updateData("GamesWon" + level, won.toString());
                             UtilsGPS.unlockAchievement(mActivity, mapManager.level);
                             mapManager.newScore = secondsToScore(mapManager.seconds);
-                            if(mapManager.newScore>mActivity.getHiscore(mapManager.level)){
-                                mResourceManager.mActivity.setHiScore(mapManager.newScore, mapManager.level);
+                            float oldScore = Float.parseFloat(PlayerDataManager.getInstance().getData("HiScore"));
+                            if(mapManager.newScore>oldScore){
+                                PlayerDataManager.getInstance().updateData("HiScore",new Float(mapManager.newScore).toString());
+                                UtilsGPS.submitScoreToLeaderboard(mActivity, mapManager.newScore);
                             }
-                            UtilsGPS.submitScoreToLeaderboard(mActivity, mapManager.level, mActivity.getHiscore(mapManager.level));
+                            if (mapManager.level<16){
+                                mapManager.level = level + 1;
+                                PlayerDataManager.getInstance().updateData("MaxLevel", new Integer(level + 1).toString());
+                            }
                         }
                     } else {
-                        mapManager.switchBombs(this.pWidth, this.pHeight);
+                        mapManager.switchBombs(this.pWidth, this.pHeight, row, col);
                         mActivity.playSound(mResourceManager.soundExplosion);
                         mapManager.newScore = secondsToScore(mapManager.seconds);
                         mapManager.setGameOver(true);
@@ -138,13 +149,20 @@ public class Tile extends Sprite{
                         mActivity.playSound(mResourceManager.soundTada);
                         mapManager.setGameOver(true);
                         mapManager.setWin(true);
-                        mActivity.setGamesWon(mActivity.getGamesWon(mapManager.level) + 1, mapManager.level);
+                        int level = mapManager.level;
+                        Integer won = Integer.parseInt(PlayerDataManager.getInstance().getData("GamesWon" + level)) + 1;
+                        PlayerDataManager.getInstance().updateData("GamesWon" + level, won.toString());
                         UtilsGPS.unlockAchievement(mActivity, mapManager.level);
                         mapManager.newScore = secondsToScore(mapManager.seconds);
-                        if(mapManager.newScore>mActivity.getHiscore(mapManager.level)){
-                            mResourceManager.mActivity.setHiScore(mapManager.newScore, mapManager.level);
+                        float oldScore = Float.parseFloat(PlayerDataManager.getInstance().getData("HiScore"));
+                        if(mapManager.newScore>oldScore){
+                            PlayerDataManager.getInstance().updateData("HiScore",new Float(mapManager.newScore).toString());
+                            UtilsGPS.submitScoreToLeaderboard(mActivity, mapManager.newScore);
                         }
-                        UtilsGPS.submitScoreToLeaderboard(mActivity, mapManager.level, mActivity.getHiscore(mapManager.level));
+                        if (mapManager.level<16){
+                            mapManager.level = level + 1;
+                            PlayerDataManager.getInstance().updateData("MaxLevel", new Integer(level + 1).toString());
+                        }
                     }
 
                     return true;
@@ -174,9 +192,8 @@ public class Tile extends Sprite{
 
     private float secondsToScore(int seconds){
         float count3bv = mapManager.count3BV();
-        float score = (count3bv / seconds)*1000;
+        float score = (count3bv / seconds)*1000 * MapManager.getInstance().level;
         //return (150 - (seconds / 4)) * MapManager.getInstance().level;
         return score;
     }
-
 }

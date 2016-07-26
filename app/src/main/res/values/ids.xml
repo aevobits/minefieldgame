@@ -2,10 +2,14 @@
 <resources>
     <string translatable="false" name="app_id">939350021922</string>
     <string translatable="false" name="banner_ad_unit_id">ca-app-pub-1675377310609556/8903922624</string>
+    <string translatable="false" name="banner_ad_unit_id_test">ca-app-pub-3940256099942544/6300978111</string>
     <string translatable="false" name="leaderboard_1">CgkIoq7_rKsbEAIQAQ</string>
     <string translatable="false" name="leaderboard_2">CgkIoq7_rKsbEAIQBA</string>
     <string translatable="false" name="leaderboard_3">CgkIoq7_rKsbEAIQBQ</string>
     <string translatable="false" name="leaderboard_4">CgkIoq7_rKsbEAIQBg</string>
+
+    <string translatable="false" name="leaderboard2">CgkIoq7_rKsbEAIQDw</string>
+
     <string translatable="false" name="achievement_1">CgkIoq7_rKsbEAIQBw</string>
     <string translatable="false" name="achievement_2">CgkIoq7_rKsbEAIQCA</string>
     <string translatable="false" name="achievement_3">CgkIoq7_rKsbEAIQCQ</string>
@@ -14,4 +18,21 @@
     <string translatable="false" name="achievement_6">CgkIoq7_rKsbEAIQDA</string>
     <string translatable="false" name="achievement_7">CgkIoq7_rKsbEAIQDQ</string>
     <string translatable="false" name="achievement_8">CgkIoq7_rKsbEAIQDg</string>
+
+    <string translatable="false" name="achievement2_1">CgkIoq7_rKsbEAIQEA</string>
+    <string translatable="false" name="achievement2_2">CgkIoq7_rKsbEAIQEQ</string>
+    <string translatable="false" name="achievement2_3">CgkIoq7_rKsbEAIQEg</string>
+    <string translatable="false" name="achievement2_4">CgkIoq7_rKsbEAIQEw</string>
+    <string translatable="false" name="achievement2_5">CgkIoq7_rKsbEAIQFA</string>
+    <string translatable="false" name="achievement2_6">CgkIoq7_rKsbEAIQFQ</string>
+    <string translatable="false" name="achievement2_7">CgkIoq7_rKsbEAIQFg</string>
+    <string translatable="false" name="achievement2_8">CgkIoq7_rKsbEAIQFw</string>
+    <string translatable="false" name="achievement2_9">CgkIoq7_rKsbEAIQGA</string>
+    <string translatable="false" name="achievement2_10">CgkIoq7_rKsbEAIQGQ</string>
+    <string translatable="false" name="achievement2_11">CgkIoq7_rKsbEAIQGg</string>
+    <string translatable="false" name="achievement2_12">CgkIoq7_rKsbEAIQGw</string>
+    <string translatable="false" name="achievement2_13">CgkIoq7_rKsbEAIQHA</string>
+    <string translatable="false" name="achievement2_14">CgkIoq7_rKsbEAIQHQ</string>
+    <string translatable="false" name="achievement2_15">CgkIoq7_rKsbEAIQHg</string>
+    <string translatable="false" name="achievement2_16">CgkIoq7_rKsbEAIQHw</string>
 </resources>

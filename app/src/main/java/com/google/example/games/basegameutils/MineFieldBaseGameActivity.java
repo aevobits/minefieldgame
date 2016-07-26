@@ -22,6 +22,10 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.games.multiplayer.realtime.RealTimeMessageReceivedListener;
+import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateListener;
+import com.google.android.gms.games.multiplayer.realtime.RoomUpdateListener;
+import com.google.android.gms.games.multiplayer.OnInvitationReceivedListener;
 
 import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.ui.activity.LayoutGameActivity;
@@ -44,8 +48,7 @@ import org.andengine.ui.activity.LayoutGameActivity;
  * @author Bruno Oliveira (Google)
  */
 public abstract class MineFieldBaseGameActivity extends LayoutGameActivity
-        implements
-        GameHelper.GameHelperListener {
+        implements  GameHelper.GameHelperListener{
 
     // The game helper object. This class is mainly a wrapper around this object.
     protected GameHelper mHelper;

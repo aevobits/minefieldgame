@@ -29,10 +29,10 @@ public class Field extends Entity {
         this.vbom = vbom;
 
         final float halfFieldWidth = (TILE_DIMENSION * cols);
-        this.mInitialX = ((GameActivity.CAMERA_WIDTH - halfFieldWidth) * 0.5f);
+        this.mInitialX = ((GameActivity.SCREEN_WIDTH - halfFieldWidth) * 0.5f);
 
         final float halfFieldHeight = (TILE_DIMENSION * rows);
-        this.mInitialY = GameActivity.CAMERA_HEIGHT - ((GameActivity.CAMERA_HEIGHT - halfFieldHeight) * 0.5f);
+        this.mInitialY = GameActivity.SCREEN_HEIGHT - ((GameActivity.SCREEN_HEIGHT - halfFieldHeight) * 0.5f);
 
     }
 

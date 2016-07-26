@@ -5,7 +5,7 @@ import android.content.DialogInterface;
 
 import com.aevobits.games.minesfield.GameActivity;
 import com.aevobits.games.minesfield.R;
-import com.aevobits.games.minesfield.util.PlayerDataManagement;
+import com.aevobits.games.minesfield.manager.PlayerDataManager;
 import com.aevobits.games.minesfield.util.Utils;
 import com.aevobits.games.minesfield.entity.Tile;
 
@@ -14,11 +14,16 @@ import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.primitive.Gradient;
 import org.andengine.entity.primitive.Rectangle;
+import org.andengine.entity.scene.CameraScene;
+import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.EntityBackground;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.entity.text.TextOptions;
 import org.andengine.input.touch.TouchEvent;
+import org.andengine.input.touch.detector.ContinuousHoldDetector;
+import org.andengine.input.touch.detector.PinchZoomDetector;
+import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.util.adt.align.HorizontalAlign;
 import org.andengine.util.adt.color.Color;
 
@@ -29,77 +34,67 @@ import java.util.Locale;
  */
 public class GameScene extends BaseScene {
 
-    private static final String TAG = PlayerDataManagement.class.getSimpleName();
+    private static final String TAG = GameScene.class.getSimpleName();
     private MapManager mapManager;
 
     private float tileDimension = 60f;
-    private final float PADDING_SIDE = 30f;
+    private final float PADDING_SIDE = 15f;
     private int rows = 10;
     private int cols = 10;
-    private int bombs = 20;
+    private boolean playing = true;
     private Text mTimerHudText;
 
+    private GameScene gameScene;
     private GameOverScene gameOverScene;
+    private CameraScene pauseScene;
+    private Sprite playButton;
 
     private TimerHandler timer;
     private IUpdateHandler gameUpdateHandler;
 
     @Override
     public void createScene() {
-        if(MapManager.getInstance().level==1){
-            rows = 10;
-            cols = 10;
-            bombs = 10;
-        }
-        if(MapManager.getInstance().level==2){
-            rows = 10;
-            cols = 10;
-            bombs = 20;
-        }
-        if(MapManager.getInstance().level==3){
-            rows = 10;
-            cols = 10;
-            bombs = 30;
-        }
-        if(MapManager.getInstance().level==4){
-            rows = 15;
-            cols = 12;
-            bombs = 50;
-        }
+        //mActivity.setContentView(R.layout.game_layout);
+        this.gameScene = this;
+        this.gameScene.setTouchAreaBindingOnActionDownEnabled(true);
 
+        mapManager = MapManager.getInstance();
+        mapManager.create(this);
+        int level = mapManager.level;
+        Integer played = Integer.parseInt(PlayerDataManager.getInstance().getData("GamesPlayed" + level)) + 1;
+        PlayerDataManager.getInstance().updateData("GamesPlayed" + level, played.toString());
+
+        this.rows = mapManager.rows;
+        this.cols = mapManager.cols;
         createBackground();
         createField();
-        gameOverScene = new GameOverScene(this);
         fadeIn();
-        mActivity.setGamesPlayed(mActivity.getGamesPlayed(mapManager.level) + 1, mapManager.level);
-        //int played = Integer.parseInt(PlayerDataManagement.getInstance(mActivity).loadPlayerData("GamesPlayed" + mapManager.level));
-        //Log.e(TAG, "Games Played:" + played);
-
     }
 
     private void createBackground(){
         Gradient g = new Gradient(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT, mResourceManager.vbom);
         g.setGradient(new Color(0.68627451f, 0.866666667f, 0.91372549f), new Color(0.109803922f, 0.717647059f, 0.921568627f), 0, 1);
         this.setBackground(new EntityBackground(g));
+        g.setIgnoreUpdate(true);
     }
 
     private void createField(){
 
-        tileDimension = (GameActivity.CAMERA_WIDTH - (2 * PADDING_SIDE)) / (this.cols);
+        tileDimension = (SCREEN_WIDTH - (2 * PADDING_SIDE)) / (this.cols);
 
         float mInitialX = PADDING_SIDE + (tileDimension * 0.5f);
 
         final float fieldHeight = (tileDimension * this.rows);
-        float mInitialY = ((((GameActivity.CAMERA_HEIGHT - fieldHeight) * 0.5f) + fieldHeight) - (tileDimension * 0.5f))+30f;
+        float mInitialY = ((((SCREEN_HEIGHT - fieldHeight) * 0.5f) + fieldHeight) - (tileDimension * 0.5f))+50f;
+        mapManager.pXInit = mInitialX;
+        mapManager.pYInit = mInitialY;
 
         Rectangle rectangle = new Rectangle(mInitialX + (tileDimension * (this.cols * 0.5f) - tileDimension * 0.5f),
                 mInitialY - (tileDimension * (this.rows * 0.5f) - tileDimension * 0.5f),
                 (tileDimension * this.cols) + 10f, (tileDimension * this.rows) + 10f, mResourceManager.vbom);
-        rectangle.setColor(Color.WHITE);
+        rectangle.setColor(new Color(0.650980392f,0.447058824f,0.211764706f));
+        rectangle.setIgnoreUpdate(true);
         attachChild(rectangle);
-
-        mapManager = MapManager.getInstance();
-        mapManager.create(rows, cols, bombs, mInitialX, mInitialY, this);
 
         float tmpY = mInitialY;
 
@@ -108,6 +103,7 @@ public class GameScene extends BaseScene {
             for (int j = 1; j <= this.cols; j++) {
                 Tile tile = new Tile(tmpX, tmpY, i, j, tileDimension, tileDimension, mResourceManager.tileTextureRegion, mResourceManager.vbom);
                 registerTouchArea(tile);
+                tile.setIgnoreUpdate(true);
                 attachChild(tile);
 
                 tmpX = tmpX + tileDimension;
@@ -115,24 +111,66 @@ public class GameScene extends BaseScene {
             tmpY = tmpY - tileDimension;
         }
 
-        Sprite bombsSprite = new Sprite(82, SCREEN_HEIGHT-50f,100, 50, mResourceManager.bombsTileTextureRegion, mResourceManager.vbom);
+        pauseScene = new CameraScene(mResourceManager.camera);
+        pauseScene.setBackgroundEnabled(false);
+        Rectangle backgroundPauseScene = new Rectangle(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2,
+                SCREEN_WIDTH, SCREEN_HEIGHT, vbom);
+        backgroundPauseScene.setColor(new Color(0.004901961f, 0.004901961f, 0.004901961f));
+        backgroundPauseScene.setAlpha(0.5f);
+        Rectangle rectangleGame = new Rectangle(mInitialX + (tileDimension * (this.cols * 0.5f) - tileDimension * 0.5f),
+                mInitialY - (tileDimension * (this.rows * 0.5f) - tileDimension * 0.5f),
+                (tileDimension * this.cols) + 10f, (tileDimension * this.rows) + 10f, mResourceManager.vbom);
+        rectangleGame.setColor(Color.WHITE);
+        pauseScene.attachChild(backgroundPauseScene);
+        pauseScene.attachChild(rectangleGame);
+
+        playButton = new Sprite(rectangleGame.getX(), rectangleGame.getY(), 120, 120, mResourceManager.playTextureRegion, vbom){
+            @Override
+            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+                if (pSceneTouchEvent.isActionUp()) {
+                    gameScene.clearChildScene();
+                    gameScene.playing = true;
+
+                }
+                return true;
+            }
+        };
+        pauseScene.attachChild(playButton);
+        pauseScene.registerTouchArea(playButton);
+
+        Sprite bombsSprite = new Sprite(82, SCREEN_HEIGHT-25f,128, 40, mResourceManager.bombsTileTextureRegion, mResourceManager.vbom);
+        bombsSprite.setIgnoreUpdate(true);
         attachChild(bombsSprite);
 
-        mapManager.mBombsHudText = new Text(105f, SCREEN_HEIGHT-50f, mResourceManager.montserrat, "0123456789", new TextOptions(HorizontalAlign.LEFT), mResourceManager.vbom);
-        mapManager.mBombsHudText.setScale(0.7f);
+        mapManager.mBombsHudText = new Text(105f, SCREEN_HEIGHT-27f, mResourceManager.bebasneueBold, "0123456789", new TextOptions(HorizontalAlign.LEFT), mResourceManager.vbom);
+        mapManager.mBombsHudText.setScale(0.8f);
         mapManager.mBombsHudText.setText(String.valueOf(mapManager.flagsBombs));
         attachChild(mapManager.mBombsHudText);
 
-        Sprite timerSprite = new Sprite(SCREEN_WIDTH - 104f, SCREEN_HEIGHT-50f,136, 50, mResourceManager.timerGameTileTextureRegion, mResourceManager.vbom);
+        Sprite currentLevelSprite = new Sprite((SCREEN_WIDTH / 2) - 10f, SCREEN_HEIGHT-25f,128, 40, mResourceManager.currentLevelTextureRegion, mResourceManager.vbom);
+        currentLevelSprite.setIgnoreUpdate(true);
+        attachChild(currentLevelSprite);
+
+        Text currentLevelText = new Text((SCREEN_WIDTH / 2) + 7f, SCREEN_HEIGHT-27f, mResourceManager.bebasneueBold, String.valueOf(mapManager.level), new TextOptions(HorizontalAlign.LEFT), mResourceManager.vbom);
+        currentLevelText.setIgnoreUpdate(true);
+        currentLevelText.setScale(0.8f);
+        attachChild(currentLevelText);
+
+        Sprite timerSprite = new Sprite(SCREEN_WIDTH - 104f, SCREEN_HEIGHT-25f,140, 40, mResourceManager.timerGameTileTextureRegion, mResourceManager.vbom);
+        timerSprite.setIgnoreUpdate(true);
         attachChild(timerSprite);
-        mTimerHudText = new Text(SCREEN_WIDTH - 85f, SCREEN_HEIGHT-50f, mResourceManager.montserrat, "0123456789", new TextOptions(HorizontalAlign.LEFT), mResourceManager.vbom);
+
+        mTimerHudText = new Text(SCREEN_WIDTH - 85f, SCREEN_HEIGHT-27f, mResourceManager.bebasneueBold, "0123456789", new TextOptions(HorizontalAlign.LEFT), mResourceManager.vbom);
         mTimerHudText.setText("0:00");
-        mTimerHudText.setScale(0.7f);
+        mTimerHudText.setScale(0.8f);
         attachChild(mTimerHudText);
 
+        float pY = 110;
+        float icon_width = 80;
+        float padding = 10;
+        float pX = ((SCREEN_WIDTH - ((icon_width + padding) * 3)) / 2) + (icon_width / 2);
 
-
-        Sprite homeSprite = new Sprite(82f, 110f,64, 64, mResourceManager.homeTextureRegion, mResourceManager.vbom){
+        Sprite homeSprite = new Sprite(pX, pY,icon_width, icon_width, mResourceManager.homeTextureRegion, mResourceManager.vbom){
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 if (pSceneTouchEvent.isActionUp()) {
@@ -156,26 +194,36 @@ public class GameScene extends BaseScene {
                 return true;
             }
         };
-        attachChild(homeSprite);
         registerTouchArea(homeSprite);
+        homeSprite.setIgnoreUpdate(true);
+        attachChild(homeSprite);
 
-        Sprite bestScoreSprite = new Sprite(SCREEN_WIDTH / 2, 110f,120, 70, mResourceManager.bestScoreTextureRegion, mResourceManager.vbom);
-        attachChild(bestScoreSprite);
+        pX = pX + icon_width + padding;
+        Sprite pauseSprite = new Sprite(pX, pY,icon_width, icon_width, mResourceManager.pauseTextureRegion, mResourceManager.vbom){
+            @Override
+            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+                switch (pSceneTouchEvent.getAction()) {
+                    case TouchEvent.ACTION_UP: {
+                        playing = !playing;
+                        if (!playing){
+                            gameScene.setChildScene(pauseScene, false, true, true);
+                        }else {
 
-        Text bestScoreText = new Text(SCREEN_WIDTH / 2, 125f, mResourceManager.montserrat, "BEST", new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
-        bestScoreText.setScale(0.87f);
-        bestScoreText.setColor(Color.BLACK);
-        attachChild(bestScoreText);
+                        }
+                        return true;
+                    }
+                    default: {
+                        return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
+                    }
+                }
+            }
+        };
+        registerTouchArea(pauseSprite);
+        pauseSprite.setIgnoreUpdate(true);
+        attachChild(pauseSprite);
 
-        Locale current = mActivity.getResources().getConfiguration().locale;
-        float highScore = mResourceManager.mActivity.getHiscore(MapManager.getInstance().level);
-        String bestScoreString = "" + String.format(current,"%.02f", highScore);
-        Text bestScore = new Text(SCREEN_WIDTH / 2, 95f, mResourceManager.montserrat, bestScoreString, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
-        bestScore.setScale(0.77f);
-        bestScore.setColor(Color.BLACK);
-        attachChild(bestScore);
-
-        Sprite replayArrowSprite = new Sprite((SCREEN_WIDTH)-82f, 110f,64, 64, mResourceManager.replayTextureRegion, mResourceManager.vbom){
+        pX = pX + icon_width + padding;
+        Sprite replayArrowSprite = new Sprite(pX, pY,icon_width, icon_width, mResourceManager.replayTextureRegion, mResourceManager.vbom){
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 if (pSceneTouchEvent.isActionUp()) {
@@ -199,8 +247,9 @@ public class GameScene extends BaseScene {
                 return true;
             }
         };
-        attachChild(replayArrowSprite);
         registerTouchArea(replayArrowSprite);
+        replayArrowSprite.setIgnoreUpdate(true);
+        attachChild(replayArrowSprite);
 
         //mResourceManager.engine.registerUpdateHandler(new FPSLogger());
         gameUpdateHandler = new IUpdateHandler() {
@@ -209,17 +258,11 @@ public class GameScene extends BaseScene {
             public void onUpdate(float pSecondsElapsed) {
 
                 if(mapManager.getGameOver() && (!mapManager.isWin())){
-                    String text = "Hai Perso!";
-                    gameOverScene.setGameOverText(text);
+                    gameOverScene = new GameOverScene(gameScene, false);
                     setChildScene(gameOverScene.getmGameOverScene(), false, true, true);
                 }
                 if(mapManager.getGameOver() && (mapManager.isWin())){
-                    String text = "Hai Vinto!";
-                    gameOverScene.setGameOverText(text);
-                    Locale current = mActivity.getResources().getConfiguration().locale;
-                    String gameOverScore = "punteggio: " + String.format(current,"%.02f", mapManager.newScore);
-                    gameOverScene.setGameOverTextScore(gameOverScore);
-                    gameOverScene.setGameOverTextScoreVisible(true);
+                    gameOverScene = new GameOverScene(gameScene, true);
                     setChildScene(gameOverScene.getmGameOverScene(), false, true, true);
                 }
             }
@@ -235,15 +278,17 @@ public class GameScene extends BaseScene {
 
             @Override
             public void onTimePassed(TimerHandler pTimerHandler) {
-                mapManager.seconds++;
-                String time = Utils.secondsToString(mapManager.seconds);
-                mTimerHudText.setText(time);
+                if (playing) {
+                    mapManager.seconds++;
+                    String time = Utils.secondsToString(mapManager.seconds);
+                    mTimerHudText.setText(time);
+                }
             }
         });
         registerUpdateHandler(timer);
 
         // for debug purpose only
-        //mapManager.switchBombs(tileDimension, tileDimension);
+        mapManager.switchBombs(tileDimension, tileDimension, -1, -1);
     }
 
     public void restartGame(){
@@ -254,7 +299,7 @@ public class GameScene extends BaseScene {
     }
 
     public void backToMenu(){
-        mResourceManager.loadMainManuResources();
+        mResourceManager.loadMainMenuResources();
         this.unregisterUpdateHandler(gameUpdateHandler);
         this.unregisterUpdateHandler(timer);
         mapManager.setGameOver(false);

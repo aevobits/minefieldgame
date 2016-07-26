@@ -2,7 +2,7 @@ package com.aevobits.games.minesfield.scene;
 
 import com.aevobits.games.minesfield.GameActivity;
 import com.aevobits.games.minesfield.R;
-import com.aevobits.games.minesfield.ResourceManager;
+import com.aevobits.games.minesfield.manager.ResourceManager;
 
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.sprite.Sprite;
@@ -23,7 +23,7 @@ public class RulesBoardScene extends BaseScene{
     private ResourceManager mResourceManager;
     private SceneManager mSceneManager;
 
-    private static final float AUTOWRAP_WIDTH = 645f;
+    private static final float AUTOWRAP_WIDTH = 820f;
 
     public RulesBoardScene(){
         this.mResourceManager = ResourceManager.getInstance();
@@ -53,12 +53,12 @@ public class RulesBoardScene extends BaseScene{
 
     private void createRulesBoardScene(){
 
-        final float overX = GameActivity.CAMERA_WIDTH / 2;
-        final float overY = GameActivity.CAMERA_HEIGHT / 2;
+        final float overX = GameActivity.SCREEN_WIDTH / 2;
+        final float overY = GameActivity.SCREEN_HEIGHT / 2;
 
         this.setBackgroundEnabled(false);
         Rectangle backgroundGameOver = new Rectangle(overX, overY,
-                GameActivity.CAMERA_WIDTH, GameActivity.CAMERA_HEIGHT, this.mResourceManager.vbom){
+                GameActivity.SCREEN_WIDTH, GameActivity.SCREEN_HEIGHT, this.mResourceManager.vbom){
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 switch (pSceneTouchEvent.getAction()) {
@@ -77,22 +77,22 @@ public class RulesBoardScene extends BaseScene{
         this.attachChild(backgroundGameOver);
 
         String howToPlay = mResourceManager.mActivity.getString(R.string.howToPlay);
-        Text howToPlayText = new Text(GameActivity.CAMERA_WIDTH / 2,GameActivity.CAMERA_HEIGHT - 50f, mResourceManager.montserrat, howToPlay,
+        Text howToPlayText = new Text((GameActivity.SCREEN_WIDTH / 2) + 20f,GameActivity.SCREEN_HEIGHT - 62f, mResourceManager.montserrat, howToPlay,
                 new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
-        howToPlayText.setScale(1.5f);
+        howToPlayText.setScale(1.25f);
         howToPlayText.setColor(Color.WHITE);
         this.attachChild(howToPlayText);
 
-        final Sprite rulesBoardSprite = new Sprite(overX, overY,400, 600, mResourceManager.rulesBoardTextureRegion, mResourceManager.vbom);
+        final Sprite rulesBoardSprite = new Sprite(overX, overY + 30f,450, 680, mResourceManager.rulesBoardTextureRegion, mResourceManager.vbom);
         this.attachChild(rulesBoardSprite);
 
         String rulesDescription = mResourceManager.mActivity.getString(R.string.rules_description);
-        Text rulesDescriptionText = new Text(GameActivity.CAMERA_WIDTH / 2, (GameActivity.CAMERA_HEIGHT / 2) - 25f, mResourceManager.montserrat,
+        Text rulesDescriptionText = new Text(GameActivity.SCREEN_WIDTH / 2, (GameActivity.SCREEN_HEIGHT / 2) + 15f, mResourceManager.montserrat,
                 rulesDescription, new TextOptions(AutoWrap.WORDS, AUTOWRAP_WIDTH, HorizontalAlign.LEFT, Text.LEADING_DEFAULT), mResourceManager.vbom);
         if(Locale.getDefault().getLanguage().equals("it")){
-            rulesDescriptionText.setScale(0.50f);
+            rulesDescriptionText.setScale(0.52f);
         }else {
-            rulesDescriptionText.setScale(0.55f);
+            rulesDescriptionText.setScale(0.52f);
         }
         rulesDescriptionText.setColor(Color.WHITE);
         this.attachChild(rulesDescriptionText);

@@ -1,6 +1,6 @@
 package com.aevobits.games.minesfield.scene;
 
-import com.aevobits.games.minesfield.ResourceManager;
+import com.aevobits.games.minesfield.manager.ResourceManager;
 
 /**
  * Created by vito on 20/01/16.
@@ -8,10 +8,11 @@ import com.aevobits.games.minesfield.ResourceManager;
 public class SceneManager {
     private static final SceneManager INSTANCE = new SceneManager();
 
-    public enum SceneType {SCENE_SPLASH, SCENE_MENU, SCENE_GAME, SCENE_STATS_BOARD, SCENE_RULES_BOARD}
+    public enum SceneType {SCENE_SPLASH, SCENE_MENU, SCENE_LEVEL_MENU, SCENE_GAME, SCENE_STATS_BOARD, SCENE_RULES_BOARD}
 
     private BaseScene mSplashScene;
     private BaseScene mMenuScene;
+    private BaseScene mLevelMenuScene;
     private BaseScene mGameScene;
 
     private SceneType mCurrentSceneType;
@@ -28,6 +29,9 @@ public class SceneManager {
         switch (sceneType) {
             case SCENE_MENU:
                 setScene(createMenuScene());
+                break;
+            case SCENE_LEVEL_MENU:
+                setScene(createLevelMenuScene());
                 break;
             case SCENE_GAME:
                 setScene(createGameScene());
@@ -67,6 +71,12 @@ public class SceneManager {
         mMenuScene = new MainMenuScene();
         mMenuScene.createScene();
         return mMenuScene;
+    }
+
+    private BaseScene createLevelMenuScene() {
+        mLevelMenuScene = new LevelMenuScene();
+        mLevelMenuScene.createScene();
+        return mLevelMenuScene;
     }
 
     public BaseScene createGameScene() {

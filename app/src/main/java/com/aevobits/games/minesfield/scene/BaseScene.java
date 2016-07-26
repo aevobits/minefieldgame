@@ -1,7 +1,7 @@
 package com.aevobits.games.minesfield.scene;
 
 import com.aevobits.games.minesfield.GameActivity;
-import com.aevobits.games.minesfield.ResourceManager;
+import com.aevobits.games.minesfield.manager.ResourceManager;
 
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
@@ -10,15 +10,18 @@ import org.andengine.entity.modifier.IEntityModifier;
 import org.andengine.entity.modifier.SequenceEntityModifier;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.Scene;
+import org.andengine.entity.sprite.Sprite;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.adt.color.Color;
+
+import java.util.Locale;
 
 /**
  * Created by vito on 20/01/16.
  */
 public abstract class BaseScene extends Scene {
-    protected final int SCREEN_WIDTH = GameActivity.CAMERA_WIDTH;
-    protected final int SCREEN_HEIGHT = GameActivity.CAMERA_HEIGHT;
+    protected final int SCREEN_WIDTH = GameActivity.SCREEN_WIDTH;
+    protected final int SCREEN_HEIGHT = GameActivity.SCREEN_HEIGHT;
 
     protected GameActivity mActivity;
     protected Engine mEngine;
@@ -32,8 +35,8 @@ public abstract class BaseScene extends Scene {
         mResourceManager = ResourceManager.getInstance();
         mActivity = mResourceManager.mActivity;
         //vbom = mResourceManager.vbom;
-        //mEngine = mResourceManager.engine;
-        //mCamera = mResourceManager.camera;
+        mEngine = mResourceManager.engine;
+        mCamera = mResourceManager.camera;
         mSceneManager = SceneManager.getInstance();
         //createScene();
     }
@@ -45,6 +48,16 @@ public abstract class BaseScene extends Scene {
         iem.setAutoUnregisterWhenFinished(true);
         rectangle.registerEntityModifier(iem);
         attachChild(rectangle);
+    }
+
+    protected void drawLogo(float pX, float pY){
+        Sprite titleSprite;
+        if(Locale.getDefault().getLanguage().equals("it")) {
+            titleSprite = new Sprite(pX, pY + 150, 250f, 140f, mResourceManager.titleITTextureRegion, mResourceManager.vbom);
+        } else {
+            titleSprite = new Sprite(pX, pY + 150, 350f, 168f, mResourceManager.titleENTextureRegion, mResourceManager.vbom);
+        }
+        attachChild(titleSprite);
     }
 
     public abstract void createScene();

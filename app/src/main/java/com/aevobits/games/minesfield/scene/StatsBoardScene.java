@@ -2,7 +2,7 @@ package com.aevobits.games.minesfield.scene;
 
 import com.aevobits.games.minesfield.GameActivity;
 import com.aevobits.games.minesfield.R;
-import com.aevobits.games.minesfield.ResourceManager;
+import com.aevobits.games.minesfield.manager.ResourceManager;
 
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.sprite.Sprite;
@@ -27,12 +27,12 @@ public class StatsBoardScene extends BaseScene{
     }
 
     public void createScene(){
-        final float overX = GameActivity.CAMERA_WIDTH / 2;
-        final float overY = GameActivity.CAMERA_HEIGHT / 2;
+        final float overX = GameActivity.SCREEN_WIDTH / 2;
+        final float overY = GameActivity.SCREEN_HEIGHT / 2;
 
         this.setBackgroundEnabled(false);
         Rectangle backgroundGameOver = new Rectangle(overX, overY,
-                GameActivity.CAMERA_WIDTH, GameActivity.CAMERA_HEIGHT, this.mResourceManager.vbom){
+                GameActivity.SCREEN_WIDTH, GameActivity.SCREEN_HEIGHT, this.mResourceManager.vbom){
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 switch (pSceneTouchEvent.getAction()) {
@@ -51,7 +51,7 @@ public class StatsBoardScene extends BaseScene{
         this.attachChild(backgroundGameOver);
 
         String statistics = mResourceManager.mActivity.getString(R.string.statistics);
-        Text statisticsText = new Text(GameActivity.CAMERA_WIDTH / 2,GameActivity.CAMERA_HEIGHT - 50f, mResourceManager.montserrat, statistics,
+        Text statisticsText = new Text(GameActivity.SCREEN_WIDTH / 2,GameActivity.SCREEN_HEIGHT - 50f, mResourceManager.montserrat, statistics,
                 new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
         statisticsText.setScale(1.5f);
         statisticsText.setColor(Color.WHITE);
@@ -66,29 +66,30 @@ public class StatsBoardScene extends BaseScene{
         Text easyTitleText = new Text(130f,640f, mResourceManager.montserrat, easyTitle, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
         this.attachChild(easyTitleText);
 
-        String easyGamesPlayedCount = String.valueOf(mActivity.getGamesPlayed(1));
+        String easyGamesPlayedCount = "";//PlayerDataManager.getInstance().getGamesPlayed(1).toString();
         String easyGamesPlayedTitle = mActivity.getString(R.string.gamePlayed);
         Text easyGamesPlayedText = new Text(130f,580f, mResourceManager.montserrat, easyGamesPlayedTitle + " " + easyGamesPlayedCount, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
         easyGamesPlayedText.setScale(0.6f);
         this.attachChild(easyGamesPlayedText);
 
-        String easyGamesWonCount = String.valueOf(mActivity.getGamesWon(1));
+        String easyGamesWonCount = "";//PlayerDataManager.getInstance(mActivity).getGamesWon(1).toString();
         String easyGamesWonTitle = mActivity.getString(R.string.gameWon);
         Text easyGamesWonText = new Text(130f,550f, mResourceManager.montserrat, easyGamesWonTitle + " " + easyGamesWonCount, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
         easyGamesWonText.setScale(0.6f);
         this.attachChild(easyGamesWonText);
 
         String easyPercentageWonCount = "0";
-        if (mActivity.getGamesWon(1) != 0)
-            easyPercentageWonCount = String.format(mResourceManager.locale, "%.2f",(((float)mActivity.getGamesWon(1) * 100)/ (float)mActivity.getGamesPlayed(1)));
+        if (!easyGamesWonCount.equals("0"))
+            easyPercentageWonCount = String.format(mResourceManager.locale, "%.2f",((new Float(easyGamesWonCount) * 100)/ new Float(easyGamesPlayedCount)));
         String easyPercentageWonTitle = mActivity.getString(R.string.percentageWon);
         Text easyPercentageWonText = new Text(130f,520f, mResourceManager.montserrat, easyPercentageWonTitle + " " + easyPercentageWonCount, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
         easyPercentageWonText.setScale(0.6f);
         this.attachChild(easyPercentageWonText);
 
         String easyHiScore = "0";
-        if (mActivity.getHiscore(1) != 0)
-            easyHiScore = String.format(mResourceManager.locale, "%.2f",mActivity.getHiscore(1));
+        Float easyHiScoreValue = 0f;//PlayerDataManager.getInstance(mActivity).getHiScore(1);
+        if (easyHiScoreValue != 0)
+            easyHiScore = String.format(mResourceManager.locale, "%.2f",easyHiScoreValue);
         String easyHiScoreTitle = mActivity.getString(R.string.hiScore);
         Text easyHiScoreText = new Text(130f,490f, mResourceManager.montserrat, easyHiScoreTitle + " " + easyHiScore, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
         easyHiScoreText.setScale(0.6f);
@@ -102,29 +103,30 @@ public class StatsBoardScene extends BaseScene{
         intermediateTitleText.setScale(0.8f);
         this.attachChild(intermediateTitleText);
 
-        String intermediateGamesPlayedCount = String.valueOf(mActivity.getGamesPlayed(2));
+        String intermediateGamesPlayedCount = "";//PlayerDataManager.getInstance(mActivity).getGamesPlayed(2).toString();
         String intermediateGamesPlayedTitle = mActivity.getString(R.string.gamePlayed);
         Text intermediateGamesPlayedText = new Text(345f,580f, mResourceManager.montserrat, intermediateGamesPlayedTitle + " " + intermediateGamesPlayedCount, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
         intermediateGamesPlayedText.setScale(0.6f);
         this.attachChild(intermediateGamesPlayedText);
 
-        String intermediateGamesWonCount = String.valueOf(mActivity.getGamesWon(2));
+        String intermediateGamesWonCount = "";//PlayerDataManager.getInstance(mActivity).getGamesWon(2).toString();
         String intermediateGamesWonTitle = mActivity.getString(R.string.gameWon);
         Text intermediateGamesWonText = new Text(345f,550f, mResourceManager.montserrat, intermediateGamesWonTitle + " " + intermediateGamesWonCount, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
         intermediateGamesWonText.setScale(0.6f);
         this.attachChild(intermediateGamesWonText);
 
         String intermediatePercentageWonCount = "0";
-        if (mActivity.getGamesWon(2) != 0)
-            intermediatePercentageWonCount = String.format(mResourceManager.locale, "%.2f",(((float)mActivity.getGamesWon(2) * 100)/ (float)mActivity.getGamesPlayed(2)));
+        if (!intermediateGamesWonCount.equals("0"))
+            intermediatePercentageWonCount = String.format(mResourceManager.locale, "%.2f",((new Float(intermediateGamesWonCount) * 100)/ new Float(intermediateGamesPlayedCount)));
         String intermediatePercentageWonTitle = mActivity.getString(R.string.percentageWon);
         Text intermediatePercentageWonText = new Text(345f,520f, mResourceManager.montserrat, intermediatePercentageWonTitle + " " + intermediatePercentageWonCount, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
         intermediatePercentageWonText.setScale(0.6f);
         this.attachChild(intermediatePercentageWonText);
 
         String intermediateHiScore = "0";
-        if (mActivity.getHiscore(2) != 0)
-            intermediateHiScore = String.format(mResourceManager.locale, "%.2f",mActivity.getHiscore(2));
+        Float intermediateHiScoreValue = 0f;//PlayerDataManager.getInstance(mActivity).getHiScore(2);
+        if (intermediateHiScoreValue != 0)
+            intermediateHiScore = String.format(mResourceManager.locale, "%.2f",intermediateHiScoreValue);
         String intermediateHiScoreTitle = mActivity.getString(R.string.hiScore);
         Text intermediateHiScoreText = new Text(345f,490f, mResourceManager.montserrat, intermediateHiScoreTitle + " " + intermediateHiScore, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
         intermediateHiScoreText.setScale(0.6f);
@@ -138,29 +140,30 @@ public class StatsBoardScene extends BaseScene{
         hardTitleText.setColor(Color.WHITE);
         this.attachChild(hardTitleText);
 
-        String hardGamesPlayedCount = String.valueOf(mActivity.getGamesPlayed(3));
+        String hardGamesPlayedCount = "";//PlayerDataManager.getInstance(mActivity).getGamesPlayed(3).toString();
         String hardGamesPlayedTitle = mActivity.getString(R.string.gamePlayed);
         Text hardGamesPlayedText = new Text(130f,295f, mResourceManager.montserrat, hardGamesPlayedTitle + " " + hardGamesPlayedCount, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
         hardGamesPlayedText.setScale(0.6f);
         this.attachChild(hardGamesPlayedText);
 
-        String hardGamesWonCount = String.valueOf(mActivity.getGamesWon(3));
+        String hardGamesWonCount = "";//PlayerDataManager.getInstance(mActivity).getGamesWon(3).toString();
         String hardGamesWonTitle = mActivity.getString(R.string.gameWon);
         Text hardGamesWonText = new Text(130f,265f, mResourceManager.montserrat, hardGamesWonTitle + " " + hardGamesWonCount, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
         hardGamesWonText.setScale(0.6f);
         this.attachChild(hardGamesWonText);
 
         String hardPercentageWonCount = "0";
-        if (mActivity.getGamesWon(3) != 0)
-            hardPercentageWonCount = String.format(mResourceManager.locale, "%.2f",(((float)mActivity.getGamesWon(3) * 100)/ (float)mActivity.getGamesPlayed(3)));
+        if (!hardGamesWonCount.equals("0"))
+            hardPercentageWonCount = String.format(mResourceManager.locale, "%.2f",((new Float(hardGamesWonCount) * 100)/ new Float(hardGamesPlayedCount)));
         String hardPercentageWonTitle = mActivity.getString(R.string.percentageWon);
         Text hardPercentageWonText = new Text(130f,235f, mResourceManager.montserrat, hardPercentageWonTitle + " " + hardPercentageWonCount, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
         hardPercentageWonText.setScale(0.6f);
         this.attachChild(hardPercentageWonText);
 
         String hardHiScore = "0";
-        if (mActivity.getHiscore(3) != 0)
-            hardHiScore = String.format(mResourceManager.locale, "%.2f",mActivity.getHiscore(3));
+        Float hardHiScoreValue = 0f;//PlayerDataManager.getInstance(mActivity).getHiScore(3);
+        if (hardHiScoreValue != 0)
+            hardHiScore = String.format(mResourceManager.locale, "%.2f",hardHiScoreValue);
         String hardHiScoreTitle = mActivity.getString(R.string.hiScore);
         Text hardHiScoreText = new Text(130f,205f, mResourceManager.montserrat, hardHiScoreTitle + " " + hardHiScore, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
         hardHiScoreText.setScale(0.6f);
@@ -174,29 +177,30 @@ public class StatsBoardScene extends BaseScene{
         proTitleText.setColor(Color.WHITE);
         this.attachChild(proTitleText);
 
-        String proGamesPlayedCount = String.valueOf(mActivity.getGamesPlayed(4));
+        String proGamesPlayedCount = "";//PlayerDataManager.getInstance(mActivity).getGamesPlayed(4).toString();
         String proGamesPlayedTitle = mActivity.getString(R.string.gamePlayed);
         Text proGamesPlayedText = new Text(345f,295f, mResourceManager.montserrat, proGamesPlayedTitle + " " + proGamesPlayedCount, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
         proGamesPlayedText.setScale(0.6f);
         this.attachChild(proGamesPlayedText);
 
-        String proGamesWonCount = String.valueOf(mActivity.getGamesWon(4));
+        String proGamesWonCount = "";//PlayerDataManager.getInstance(mActivity).getGamesWon(4).toString();
         String proGamesWonTitle = mActivity.getString(R.string.gameWon);
         Text proGamesWonText = new Text(345f,265f, mResourceManager.montserrat, proGamesWonTitle + " " + proGamesWonCount, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
         proGamesWonText.setScale(0.6f);
         this.attachChild(proGamesWonText);
 
         String proPercentageWonCount = "0";
-        if (mActivity.getGamesWon(4) != 0)
-            proPercentageWonCount = String.format(mResourceManager.locale, "%.2f",(((float)mActivity.getGamesWon(4) * 100)/ (float)mActivity.getGamesPlayed(4)));
+        if (!proGamesWonCount.equals("0"))
+            proPercentageWonCount = String.format(mResourceManager.locale, "%.2f",((new Float(proGamesWonCount) * 100)/ new Float(proGamesPlayedCount)));
         String proPercentageWonTitle = mActivity.getString(R.string.percentageWon);
         Text proPercentageWonText = new Text(345f,235f, mResourceManager.montserrat, proPercentageWonTitle + " " + proPercentageWonCount, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
         proPercentageWonText.setScale(0.6f);
         this.attachChild(proPercentageWonText);
 
         String proHiScore = "0";
-        if (mActivity.getHiscore(4) != 0)
-            proHiScore = String.format(mResourceManager.locale, "%.2f",mActivity.getHiscore(4));
+        Float proHiScoreValue = 0f;//PlayerDataManager.getInstance(mActivity).getHiScore(4);
+        if (proHiScoreValue != 0)
+            proHiScore = String.format(mResourceManager.locale, "%.2f",proHiScoreValue);
         String proHiScoreTitle = mActivity.getString(R.string.hiScore);
         Text proHiScoreText = new Text(345f,205f, mResourceManager.montserrat, proHiScoreTitle + " " + proHiScore, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
         proHiScoreText.setScale(0.6f);

@@ -1,8 +1,10 @@
-package com.aevobits.games.minesfield;
+package com.aevobits.games.minesfield.manager;
 
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
+
+import com.aevobits.games.minesfield.GameActivity;
 
 import org.andengine.audio.sound.Sound;
 import org.andengine.audio.sound.SoundFactory;
@@ -55,46 +57,49 @@ public class ResourceManager {
     public ITextureRegion sevenTileTextureRegion;
     public ITextureRegion eightTileTextureRegion;
     public ITextureRegion bombTileTextureRegion;
+    public ITextureRegion bombLoseTileTextureRegion;
     public ITextureRegion bombsTileTextureRegion;
     public ITextureRegion timerGameTileTextureRegion;
     public ITextureRegion homeTextureRegion;
-    public ITextureRegion bestScoreTextureRegion;
     public ITextureRegion replayTextureRegion;
     public ITextureRegion flagTileTextureRegion;
+    public ITextureRegion currentLevelTextureRegion;
     private BuildableBitmapTextureAtlas gameTextureAtlas;
 
     private BuildableBitmapTextureAtlas mainMenuTextureAtlas;
     private BitmapTextureAtlas mSubmenuTextureAtlas;
     public ITextureRegion titleITTextureRegion;
     public ITextureRegion titleENTextureRegion;
-    public ITextureRegion buttonLevelTextureRegion;
-    public ITextureRegion buttonEasyLevelTextureRegion;
-    public ITextureRegion buttonMediumLevelTextureRegion;
-    public ITextureRegion buttonHardLevelTextureRegion;
-    public ITextureRegion buttonProLevelTextureRegion;
+    public ITextureRegion playLevelTextureRegion;
     public TiledTextureRegion musicTextureRegion;
     public ITextureRegion rankingTextureRegion;
     public ITextureRegion rewardsTextureRegion;
     public ITextureRegion sharingTextureRegion;
     public ITextureRegion infoTextureRegion;
-    public ITextureRegion statsTextureRegion;
     public ITextureRegion rateTextureRegion;
     public ITextureRegion rulesTextureRegion;
     public ITextureRegion rulesBoardTextureRegion;
     public ITextureRegion statsBoardTextureRegion;
-    public ITexture fontStroke;
+    public ITextureRegion levelsBoardTextureRegion;
+    public ITextureRegion levelTextureRegion;
+    public ITextureRegion padlockTextureRegion;
+    public ITextureRegion pauseTextureRegion;
+    public ITextureRegion playTextureRegion;
 
     private BuildableBitmapTextureAtlas mSubBitmapTextureAtlas;
     public ITextureRegion gameOverTextTextureRegion;
+    public ITextureRegion gameOverFailedTextureRegion;
+    public ITextureRegion gameOverQuestionTextureRegion;
+    public ITextureRegion buttonTextureRegion;
     public ITextureRegion gameOverYesTextureRegion;
     public ITextureRegion gameOverNoTextureRegion;
-    public ITextureRegion mPlayTextureRegion;
 
     private ITexture fontTexture;
-
+    private ITexture fontTexture2;
+    private ITexture fontTexture3;
     public Font montserrat;
-    public Font candy_shop;
-    public Font candy_shop_min;
+    public Font  bebasneue;
+    public Font  bebasneueBold;
 
     //sounds
     public Sound soundExplosion;
@@ -130,10 +135,38 @@ public class ResourceManager {
         this.locale = this.mActivity.getResources().getConfiguration().locale;
 
         FontFactory.setAssetBasePath("font/");
+        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
+        SoundFactory.setAssetBasePath("sfx/");
+
+        fontTexture = new BitmapTextureAtlas(mActivity.getTextureManager(), 256, 256, TextureOptions.REPEATING_BILINEAR_PREMULTIPLYALPHA);
+
+        montserrat = FontFactory.createFromAsset(mActivity.getFontManager(), fontTexture,
+                mActivity.getAssets(), "Montserrat-Regular.ttf", 36, true, Color.WHITE_ARGB_PACKED_INT);
+
+        montserrat.load();
+
+        fontTexture2 = new BitmapTextureAtlas(mActivity.getTextureManager(), 256, 256, TextureOptions.REPEATING_BILINEAR_PREMULTIPLYALPHA);
+
+        bebasneue = FontFactory.createFromAsset(mActivity.getFontManager(), fontTexture2,
+                mActivity.getAssets(), "BebasNeue.ttf", 36, true, Color.WHITE_ARGB_PACKED_INT);
+
+        bebasneue.load();
+
+        fontTexture3 = new BitmapTextureAtlas(mActivity.getTextureManager(), 256, 256, TextureOptions.REPEATING_BILINEAR_PREMULTIPLYALPHA);
+
+        bebasneueBold = FontFactory.createFromAsset(mActivity.getFontManager(), fontTexture3,
+                mActivity.getAssets(), "BebasNeueBold.ttf", 36, true, Color.WHITE_ARGB_PACKED_INT);
+
+        bebasneueBold.load();
+
+        try {
+            soundClick = SoundFactory.createSoundFromAsset(mActivity.getSoundManager(), mActivity, "click.mp3");
+        } catch (IOException e) {
+            throw new RuntimeException("Error while loading audio", e);
+        }
     }
 
     public void loadSplashResources(){
-        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
         splashScreenTextureAtlas = new BuildableBitmapTextureAtlas(mActivity.getTextureManager(),
                 1024, 1024, BitmapTextureFormat.RGBA_8888,
                 TextureOptions.BILINEAR_PREMULTIPLYALPHA);
@@ -147,107 +180,90 @@ public class ResourceManager {
             throw  new RuntimeException("Error while loading splash textures", e);
         }
 
-
-        candy_shop = FontFactory.createFromAsset(mActivity.getFontManager(), mActivity.getTextureManager(), 256, 256,
-                mActivity.getAssets(), "candy_shop.ttf", 40, true, Color.WHITE_ARGB_PACKED_INT);
-        candy_shop.load();
-
-        int fontSize = (10 * density);
-        fontTexture = new BitmapTextureAtlas(mActivity.getTextureManager(), 256, 256, TextureOptions.REPEATING_BILINEAR_PREMULTIPLYALPHA);
-
-        candy_shop_min = FontFactory.createFromAsset(mActivity.getFontManager(), fontTexture,
-                mActivity.getAssets(), "candy_shop.ttf", 20, true, Color.WHITE_ARGB_PACKED_INT);
-        candy_shop_min.load();
     }
 
     public void unloadSplashResources(){
-        //edmunds.unload();
-        //edmunds = null;
+        splashScreenTextureAtlas.unload();
+        splashScreenTextureAtlas = null;
+        logoTextureRegion = null;
     }
 
-    public void loadMainManuResources(){
-        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
+    public void loadMainMenuResources(){
+
         mainMenuTextureAtlas = new BuildableBitmapTextureAtlas(mActivity.getTextureManager(),
-                1024, 1024, BitmapTextureFormat.RGBA_8888,
+                1240, 1240, BitmapTextureFormat.RGBA_8888,
                 TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+
         titleITTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
                 mainMenuTextureAtlas, mActivity.getAssets(), "campoMinato.png");
         titleENTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
                 mainMenuTextureAtlas, mActivity.getAssets(), "mineSweeper.png");
-        //buttonLevelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
-        //        mainMenuTextureAtlas, mActivity.getAssets(), "level.png");
-        buttonEasyLevelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
-                mainMenuTextureAtlas, mActivity.getAssets(), "level1.png");
-        buttonMediumLevelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
-                mainMenuTextureAtlas, mActivity.getAssets(), "level2.png");
-        buttonHardLevelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
-                mainMenuTextureAtlas, mActivity.getAssets(), "level3.png");
-        buttonProLevelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
-                mainMenuTextureAtlas, mActivity.getAssets(), "level4.png");
+        playLevelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
+                mainMenuTextureAtlas, mActivity.getAssets(), "play_button.png");
 
-        mSubmenuTextureAtlas = new BitmapTextureAtlas(mActivity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);
-        musicTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mSubmenuTextureAtlas, mActivity, "sound.png", 0, 0, 2, 1);
         rankingTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
                 mainMenuTextureAtlas, mActivity.getAssets(), "ranking.png");
         rewardsTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
                 mainMenuTextureAtlas, mActivity.getAssets(), "rewards.png");
         sharingTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
-                mainMenuTextureAtlas, mActivity.getAssets(), "sharing.png");
+                mainMenuTextureAtlas, mActivity.getAssets(), "share.png");
         infoTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
-                mainMenuTextureAtlas, mActivity.getAssets(), "info.png");
-        statsTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
-                mainMenuTextureAtlas, mActivity.getAssets(), "stats.png");
+                mainMenuTextureAtlas, mActivity.getAssets(), "info_button.png");
         rateTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
-                mainMenuTextureAtlas, mActivity.getAssets(), "rate.png");
+                mainMenuTextureAtlas, mActivity.getAssets(), "rate_button.png");
         rulesTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
-                mainMenuTextureAtlas, mActivity.getAssets(), "rules.png");
+                mainMenuTextureAtlas, mActivity.getAssets(), "rules_button.png");
         rulesBoardTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
                 mainMenuTextureAtlas, mActivity.getAssets(), "rulesBoard.png");
         statsBoardTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
                 mainMenuTextureAtlas, mActivity.getAssets(), "statistics.png");
-        mSubmenuTextureAtlas.load();
+        homeTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
+                mainMenuTextureAtlas, mActivity.getAssets(), "home.png");
+        levelsBoardTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
+                mainMenuTextureAtlas, mActivity.getAssets(), "levelsBoard.png");
+        levelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
+                mainMenuTextureAtlas, mActivity.getAssets(), "level.png");
+        padlockTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
+                mainMenuTextureAtlas, mActivity.getAssets(), "padlock.png");
+
+
+        mSubmenuTextureAtlas = new BitmapTextureAtlas(mActivity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);
+        musicTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mSubmenuTextureAtlas, mActivity, "sound.png", 0, 0, 2, 1);
 
         try {
             mainMenuTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(2, 0, 2));
             mainMenuTextureAtlas.load();
+            mSubmenuTextureAtlas.load();
         } catch (ITextureAtlasBuilder.TextureAtlasBuilderException e) {
             throw  new RuntimeException("Error while loading main menu textures", e);
         }
-
-        //fontStroke = new BitmapTextureAtlas(mActivity.getTextureManager(), 256, 256, TextureOptions.BILINEAR);
-
-        fontTexture = new BitmapTextureAtlas(mActivity.getTextureManager(), 256, 256, TextureOptions.REPEATING_BILINEAR_PREMULTIPLYALPHA);
-
-        montserrat = FontFactory.createFromAsset(mActivity.getFontManager(), fontTexture,
-                mActivity.getAssets(), "Montserrat-Regular.ttf", 36, true, Color.WHITE_ARGB_PACKED_INT);
-
-        //montserrat = FontFactory.createStrokeFromAsset(mActivity.getFontManager(), fontStroke, mActivity.getAssets(), "Montserrat-Regular.ttf", 36, true, Color.WHITE_ARGB_PACKED_INT, 1, Color.BLACK_ARGB_PACKED_INT);
-        montserrat.load();
-
-        try {
-            SoundFactory.setAssetBasePath("sfx/");
-            soundClick = SoundFactory.createSoundFromAsset(mActivity.getSoundManager(), mActivity, "click.mp3");
-
-        } catch (IOException e) {
-            throw new RuntimeException("Error while loading audio", e);
-        }
     }
 
-    public void unloadMainManuResources(){
+    public void unloadMainMenuResources(){
         mainMenuTextureAtlas.unload();
-        buttonEasyLevelTextureRegion = null;
-        buttonMediumLevelTextureRegion = null;
-        buttonHardLevelTextureRegion = null;
-        buttonProLevelTextureRegion = null;
-        musicTextureRegion = null;
+        mainMenuTextureAtlas = null;
+
+        titleITTextureRegion = null;
+        titleENTextureRegion = null;
+
         rankingTextureRegion = null;
         rewardsTextureRegion = null;
-        //montserrat.unload();
-        //montserrat = null;
+        sharingTextureRegion = null;
+        infoTextureRegion = null;
+        rateTextureRegion = null;
+        rulesTextureRegion = null;
+        rulesBoardTextureRegion = null;
+        statsBoardTextureRegion = null;
+        homeTextureRegion = null;
+
+        mSubmenuTextureAtlas.unload();
+        mSubmenuTextureAtlas = null;
+        musicTextureRegion = null;
+
     }
 
     public void loadGameResources(){
-        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
+
         gameTextureAtlas = new BuildableBitmapTextureAtlas(mActivity.getTextureManager(),
                 1024, 1024, BitmapTextureFormat.RGBA_8888,
                 TextureOptions.BILINEAR_PREMULTIPLYALPHA);
@@ -273,38 +289,42 @@ public class ResourceManager {
                 gameTextureAtlas, mActivity.getAssets(), "eightTile.png");
         bombTileTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
                 gameTextureAtlas, mActivity.getAssets(), "bombTile.png");
+        bombLoseTileTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
+                gameTextureAtlas, mActivity.getAssets(), "bombLoseTile.png");
         flagTileTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
                 gameTextureAtlas, mActivity.getAssets(), "flag.png");
         bombsTileTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
                 gameTextureAtlas, mActivity.getAssets(), "bombs.png");
         timerGameTileTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
-                gameTextureAtlas, mActivity.getAssets(), "timerGame.png");
+                gameTextureAtlas, mActivity.getAssets(), "timer.png");
         homeTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
                 gameTextureAtlas, mActivity.getAssets(), "home.png");
-        bestScoreTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
-                gameTextureAtlas, mActivity.getAssets(), "bestScore.png");
         replayTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
                 gameTextureAtlas, mActivity.getAssets(), "replay.png");
+        currentLevelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
+                gameTextureAtlas, mActivity.getAssets(), "currentLevel.png");
+        pauseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
+                gameTextureAtlas, mActivity.getAssets(), "pause.png");
+        playTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
+                gameTextureAtlas, mActivity.getAssets(), "play.png");
 
         mSubBitmapTextureAtlas = new BuildableBitmapTextureAtlas(mActivity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);
 
         gameOverTextTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
-                mSubBitmapTextureAtlas, mActivity.getAssets(), "gameOverText.png");
+                mSubBitmapTextureAtlas, mActivity.getAssets(), "gameOver.png");
+        gameOverFailedTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
+                mSubBitmapTextureAtlas, mActivity.getAssets(), "gameOverFailed.png");
+        gameOverQuestionTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
+                mSubBitmapTextureAtlas, mActivity.getAssets(), "gameOverQuestion.png");
+        /*
         gameOverYesTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
-                mSubBitmapTextureAtlas, mActivity.getAssets(), "gameOverYes.png");
+                mSubBitmapTextureAtlas, mActivity.getAssets(), "gameOverButtonYes.png");
         gameOverNoTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
-                mSubBitmapTextureAtlas, mActivity.getAssets(), "gameOverNo.png");
+                mSubBitmapTextureAtlas, mActivity.getAssets(), "gameOverButtonNo.png");
+                */
+        buttonTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
+                mSubBitmapTextureAtlas, mActivity.getAssets(), "button.png");
 
-/*
-        calculator = FontFactory.createFromAsset(mActivity.getFontManager(), mActivity.getTextureManager(), 256, 256,
-                TextureOptions.DEFAULT, mActivity.getAssets(), "calculator.ttf", 36, true, Color.BLACK_ABGR_PACKED_INT);
-        calculator.load();
-*/
-/*
-        coolvetica = FontFactory.createFromAsset(mActivity.getFontManager(), mActivity.getTextureManager(), 256, 256,
-                TextureOptions.DEFAULT, mActivity.getAssets(), "coolvetica.ttf", 36, true, Color.BLACK_ABGR_PACKED_INT);
-        coolvetica.load();
-*/
         try {
             gameTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(2, 0, 2));
             gameTextureAtlas.load();
@@ -315,7 +335,6 @@ public class ResourceManager {
         }
 
         try {
-            SoundFactory.setAssetBasePath("sfx/");
             soundExplosion = SoundFactory.createSoundFromAsset(mActivity.getSoundManager(), mActivity, "explosion.mp3");
             soundFlip = SoundFactory.createSoundFromAsset(mActivity.getSoundManager(), mActivity, "flip.mp3");
             soundTada = SoundFactory.createSoundFromAsset(mActivity.getSoundManager(), mActivity, "tada.mp3");
@@ -326,6 +345,36 @@ public class ResourceManager {
     }
 
     public void unloadGameResources(){
+        gameTextureAtlas.unload();
+        gameTextureAtlas = null;
+        tileTextureRegion = null;
+        emptyTileTextureRegion = null;
+        oneTileTextureRegion = null;
+        twoTileTextureRegion = null;
+        threeTileTextureRegion = null;
+        fourTileTextureRegion = null;
+        fiveTileTextureRegion = null;
+        sixTileTextureRegion = null;
+        sevenTileTextureRegion = null;
+        eightTileTextureRegion = null;
+        bombTileTextureRegion = null;
+        bombLoseTileTextureRegion = null;
+        timerGameTileTextureRegion = null;
+        //homeTextureRegion = null;
+        replayTextureRegion = null;
+        currentLevelTextureRegion = null;
 
+        mSubBitmapTextureAtlas.unload();
+        mSubBitmapTextureAtlas = null;
+        gameOverTextTextureRegion = null;
+        gameOverYesTextureRegion = null;
+        gameOverNoTextureRegion = null;
+
+        soundExplosion.release();
+        soundExplosion = null;
+        soundTada.release();
+        soundTada = null;
+        soundFlip.release();
+        soundFlip = null;
     }
 }

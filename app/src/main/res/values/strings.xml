@@ -23,14 +23,17 @@
     <string name="share_extra_subject">Download this new Game!</string>
     <string name="shate_extra_text">Hi, download this new Game at: https://play.google.com/store/apps/details?id=com.aevobits.games.minesfield&amp;hl=en</string>
     <string name="share_chooser_text">Share this Game!</string>
+    <string name="levelLocked">Level Locked</string>
 
     <string name="rules_description">The player is initially presented with a grid of undifferentiated squares.
-        \nSome randomly selected squares, unknown to the player, are designated to contain mines.
-        \n\nThe game is played by revealing squares of the grid by clicking each square. If a square containing a mine is revealed,
+        Some randomly selected squares, unknown to the player, are designated to contain mines.
+        The game is played by revealing squares of the grid by clicking each square. If a square containing a mine is revealed,
         the player loses the game. If no mine is revealed, a digit is instead displayed in the square, indicating how many adjacent
         squares contain mines; if no mines are adjacent, the square becomes blank, and all adjacent squares will be recursively revealed.
-        \n\nThe player uses this information to deduce the contents of other squares, and may either safely reveal each square or
-        mark the square as containing a mine.</string>
+        The player uses this information to deduce the contents of other squares, and may either safely reveal each square or mark, with a
+        flag by a long click, the square as containing a mine. The upper left counter will be decremented, indicating the remaining number of flags is
+        possible to position, initially equal to the total number of mines. You win the game when all the squares that don\'t contain mines will
+        be discovered.</string>
     <string name="howToPlay">How To Play?</string>
     <string name="statistics">Statistics</string>
 
@@ -38,10 +41,34 @@
     <string name="intermediate">Intermediate</string>
     <string name="hard">Hard</string>
     <string name="pro">Pro</string>
+    <string name="info">Info</string>
+    <string name="play">Play</string>
+    <string name="level">LEVEL</string>
+
+    <string name="stats">Statistics</string>
+    <string name="rate">Leave A Review</string>
+    <string name="rules">Game Rules</string>
 
     <string name="gamePlayed">Played:</string>
     <string name="gameWon">Won:</string>
     <string name="percentageWon">% Won:</string>
 
     <string name="hiScore">Score:</string>
+
+    <string name="goHiScore">score: </string>
+    <string name="goNewGame">Do you want to continue?</string>
+    <string name="goCompleted">Level Completed</string>
+    <string name="goFailed">Level Failed</string>
+    <string name="goLose">You Lose!</string>
+    <string name="goYes">YES</string>
+    <string name="goNo">NO</string>
+
+    <string name="comingSoon">Coming Soon</string>
+
+    <string name="invitation_title">Send Game Invite</string>
+    <string name="invitation_message">Install this new game</string>
+    <string name="invitation_deep_link">https://play.google.com/store/apps/details?id=com.aevobits.games.minesfield&amp;hl=en</string>
+    <string name="invitation_custom_image">https://lh3.googleusercontent.com/upZH5FSNZyHR3d0NtsNwfglsRd5iZXt8Cjf_A-8XfEfTpfkQ6N43WA8X5W0jhr1gYmvM=h900-rw</string>
+    <string name="invitation_cta">Install!</string>
+
 </resources>

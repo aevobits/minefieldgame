@@ -2,12 +2,19 @@ package com.aevobits.games.minesfield.scene;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
+import android.widget.Toast;
 
 import com.aevobits.games.minesfield.R;
 import com.aevobits.games.minesfield.util.Utils;
 import com.aevobits.games.minesfield.entity.ButtonLevel;
+import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
 
+import org.andengine.engine.camera.ZoomCamera;
+import org.andengine.entity.IEntity;
+import org.andengine.entity.modifier.IEntityModifier;
 import org.andengine.entity.primitive.Gradient;
 import org.andengine.entity.scene.background.EntityBackground;
 import org.andengine.entity.sprite.Sprite;
@@ -17,6 +24,7 @@ import org.andengine.entity.text.TextOptions;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.util.adt.align.HorizontalAlign;
 import org.andengine.util.adt.color.Color;
+import org.andengine.util.modifier.IModifier;
 
 import java.util.Locale;
 
@@ -25,48 +33,52 @@ import java.util.Locale;
  */
 public class MainMenuScene extends BaseScene {
 
-    private static final int REQUEST_THE_BEST_LEADERBOARD = 10;
+    private static final int REQUEST_THE_BEST_LEADERBOARD = 100;
     private static final int REQUEST_ALL_ACHIEVEMENT = 11;
+    private static final int REQUEST_INVITE = 0;
     private RulesBoardScene mRulesBoardScene;
-    private StatsBoardScene mStatsBoardScene;
 
     @Override
     public void createScene() {
+
         //mActivity.getApiClient().disconnect();
         //mActivity.getApiClient().connect();
         //Person currentPerson = Plus.PeopleApi.getCurrentPerson(mActivity.getApiClient());
         //String personName = currentPerson.getDisplayName();
         //Log.i("MainMenuScene",personName);
-        mRulesBoardScene = new RulesBoardScene();
-        mStatsBoardScene = new StatsBoardScene();
         Gradient g = new Gradient(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT, mResourceManager.vbom);
-        //g.setGradient(new Color(0.109803922f, 0.717647059f, 0.921568627f), new Color(0f, 0.333333333f, 0.831372549f), 0, 1);
         g.setGradient(new Color(0.68627451f, 0.866666667f, 0.91372549f), new Color(0.109803922f, 0.717647059f, 0.921568627f), 0, 1);
-        //g.setGradient(new Color(0.68627451f, 0.866666667f, 0.91372549f), Color.BLUE, 0, 0.000001f);
         this.setBackground(new EntityBackground(g));
+        g.setIgnoreUpdate(true);
 
         float pX = SCREEN_WIDTH / 2;
-        float pY = (SCREEN_HEIGHT - (SCREEN_HEIGHT / 3)) - 20;
+        float pY = (SCREEN_HEIGHT - (SCREEN_HEIGHT / 3));
 
-        Sprite titleSprite;
-        if(Locale.getDefault().getLanguage().equals("it")) {
-            titleSprite = new Sprite(pX, pY + 170, 350f, 200f, mResourceManager.titleITTextureRegion, mResourceManager.vbom);
-        } else {
-            titleSprite = new Sprite(pX, pY + 170, 350f, 168f, mResourceManager.titleENTextureRegion, mResourceManager.vbom);
-        }
-        attachChild(titleSprite);
+        drawLogo(pX, pY);
 
-        ButtonLevel buttonEasyLevel = new ButtonLevel(pX, pY, 1,330, 80, mResourceManager.buttonEasyLevelTextureRegion, mResourceManager.vbom ){
+        //pY+=30f;
+
+        ButtonLevel playButton = new ButtonLevel(pX, pY, 1,394, 100, mResourceManager.playLevelTextureRegion, mResourceManager.vbom ){
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 switch (pSceneTouchEvent.getAction()) {
                     case TouchEvent.ACTION_UP: {
-                        mResourceManager.mActivity.playSound(mResourceManager.soundClick);
-                        mResourceManager.unloadMainManuResources();
-                        mResourceManager.loadGameResources();
                         MapManager.getInstance().level = this.getLevel();
-                        mSceneManager.setScene(SceneManager.SceneType.SCENE_GAME);
+                        IEntityModifier iem = Utils.clickEffect(this, 0.9f);
+                        iem.addModifierListener(new IEntityModifier.IEntityModifierListener() {
+                            @Override
+                            public void onModifierStarted(IModifier<IEntity> pModifier, IEntity pItem) {}
+
+                            @Override
+                            public void onModifierFinished(IModifier<IEntity> pModifier, IEntity pItem) {
+                                mSceneManager.setScene(SceneManager.SceneType.SCENE_LEVEL_MENU);
+                            }
+                        });
+
                         return true;
+                    }
+                    case TouchEvent.ACTION_DOWN: {
+                        mResourceManager.mActivity.playSound(mResourceManager.soundClick);
                     }
                     default:{
                         return false;
@@ -75,28 +87,38 @@ public class MainMenuScene extends BaseScene {
 
             }
         };
+        playButton.setScale(0.9f);
+        attachChild(playButton);
+        registerTouchArea(playButton);
 
-        attachChild(buttonEasyLevel);
-        registerTouchArea(buttonEasyLevel);
-
-        String easyTitle = mResourceManager.mActivity.getString(R.string.easy);
-        Text textLevel1 = new Text(pX + 30, pY, mResourceManager.montserrat, easyTitle, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
+        String playTitle = mResourceManager.mActivity.getString(R.string.play);
+        Text textLevel1 = new Text(pX + 25, pY - 5f, mResourceManager.bebasneue, playTitle, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
         textLevel1.setScale(1.4f);
         attachChild(textLevel1);
 
-        pY = pY - 90;
+        pY = pY - 100;
 
-        ButtonLevel buttonMediumLevel = new ButtonLevel(pX, pY, 2,330, 80, mResourceManager.buttonMediumLevelTextureRegion, mResourceManager.vbom ){
+        Sprite rulesButton = new Sprite(pX, pY, 394, 100, mResourceManager.rulesTextureRegion, mResourceManager.vbom ){
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 switch (pSceneTouchEvent.getAction()) {
                     case TouchEvent.ACTION_UP: {
-                        mResourceManager.mActivity.playSound(mResourceManager.soundClick);
-                        mResourceManager.unloadMainManuResources();
-                        mResourceManager.loadGameResources();
-                        MapManager.getInstance().level = this.getLevel();
-                        mSceneManager.setScene(SceneManager.SceneType.SCENE_GAME);
+                        IEntityModifier iem = Utils.clickEffect(this, 0.9f);
+                        iem.addModifierListener(new IEntityModifier.IEntityModifierListener() {
+                            @Override
+                            public void onModifierStarted(IModifier<IEntity> pModifier, IEntity pItem) {}
+
+                            @Override
+                            public void onModifierFinished(IModifier<IEntity> pModifier, IEntity pItem) {
+                                mRulesBoardScene = new RulesBoardScene();
+                                setChildScene(mRulesBoardScene.getmRulesBoardScene(),false,false, true);
+                            }
+                        });
+
                         return true;
+                    }
+                    case TouchEvent.ACTION_DOWN: {
+                        mResourceManager.mActivity.playSound(mResourceManager.soundClick);
                     }
                     default:{
                         return false;
@@ -104,33 +126,46 @@ public class MainMenuScene extends BaseScene {
                 }
             }
         };
+        rulesButton.setScale(0.9f);
+        attachChild(rulesButton);
+        registerTouchArea(rulesButton);
 
-        attachChild(buttonMediumLevel);
-        registerTouchArea(buttonMediumLevel);
-
-        String mediumTitle = mResourceManager.mActivity.getString(R.string.intermediate);
-        Text textLevel2 = new Text(pX + 30, pY, mResourceManager.montserrat, mediumTitle, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
+        String rulesTitle = mResourceManager.mActivity.getString(R.string.rules);
+        Text rulesText = new Text(pX + 25f, pY - 5f, mResourceManager.bebasneue, rulesTitle, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
         if(Locale.getDefault().getLanguage().equals("it")) {
-            textLevel2.setScale(1.1f);
-        }else {
-            textLevel2.setScale(1f);
+            rulesText.setScale(1.2f);
+        }else{
+            rulesText.setScale(1.3f);
         }
+        attachChild(rulesText);
 
-        attachChild(textLevel2);
+        pY = pY - 100;
 
-        pY = pY - 90;
-
-        ButtonLevel buttonHardLevel = new ButtonLevel(pX, pY, 3,330, 80, mResourceManager.buttonHardLevelTextureRegion, mResourceManager.vbom ){
+        Sprite rateButton = new Sprite(pX, pY, 394, 100, mResourceManager.rateTextureRegion, mResourceManager.vbom ){
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 switch (pSceneTouchEvent.getAction()) {
                     case TouchEvent.ACTION_UP: {
-                        mResourceManager.mActivity.playSound(mResourceManager.soundClick);
-                        mResourceManager.unloadMainManuResources();
-                        mResourceManager.loadGameResources();
-                        MapManager.getInstance().level = this.getLevel();
-                        mSceneManager.setScene(SceneManager.SceneType.SCENE_GAME);
+                        IEntityModifier iem = Utils.clickEffect(this, 0.9f);
+                        iem.addModifierListener(new IEntityModifier.IEntityModifierListener() {
+                            @Override
+                            public void onModifierStarted(IModifier<IEntity> pModifier, IEntity pItem) {}
+
+                            @Override
+                            public void onModifierFinished(IModifier<IEntity> pModifier, IEntity pItem) {
+                                final String appPackageName = mActivity.getPackageName();
+                                try {
+                                    mActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                                } catch (android.content.ActivityNotFoundException anfe) {
+                                    mActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                                }
+                            }
+                        });
+
                         return true;
+                    }
+                    case TouchEvent.ACTION_DOWN: {
+                        mResourceManager.mActivity.playSound(mResourceManager.soundClick);
                     }
                     default:{
                         return false;
@@ -138,49 +173,23 @@ public class MainMenuScene extends BaseScene {
                 }
             }
         };
+        rateButton.setScale(0.9f);
+        attachChild(rateButton);
+        registerTouchArea(rateButton);
 
-        attachChild(buttonHardLevel);
-        registerTouchArea(buttonHardLevel);
+        String rateTitle = mResourceManager.mActivity.getString(R.string.rate);
+        Text rateText = new Text(pX + 37f, pY - 5f, mResourceManager.bebasneue, rateTitle, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
+        if(Locale.getDefault().getLanguage().equals("it")) {
+            rateText.setScale(1.1f);
+        }else{
+            rateText.setScale(1.2f);
+        }
+        attachChild(rateText);
 
-        String hardTitle = mResourceManager.mActivity.getString(R.string.hard);
-        Text textLevel3 = new Text(pX + 30, pY, mResourceManager.montserrat, hardTitle, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
-        textLevel3.setScale(1.4f);
-        attachChild(textLevel3);
-
-
-        pY = pY - 90;
-
-        ButtonLevel buttonProLevel = new ButtonLevel(pX, pY, 4,330, 80, mResourceManager.buttonProLevelTextureRegion, mResourceManager.vbom ){
-            @Override
-            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-                switch (pSceneTouchEvent.getAction()) {
-                    case TouchEvent.ACTION_UP: {
-                        mResourceManager.mActivity.playSound(mResourceManager.soundClick);
-                        mResourceManager.unloadMainManuResources();
-                        mResourceManager.loadGameResources();
-                        MapManager.getInstance().level = this.getLevel();
-                        mSceneManager.setScene(SceneManager.SceneType.SCENE_GAME);
-                        return true;
-                    }
-                    default:{
-                        return false;
-                    }
-                }
-            }
-        };
-
-        attachChild(buttonProLevel);
-        registerTouchArea(buttonProLevel);
-
-        String proTitle = mResourceManager.mActivity.getString(R.string.pro);
-        Text textLevel4 = new Text(pX + 30, pY, mResourceManager.montserrat, proTitle, new TextOptions(HorizontalAlign.CENTER), mResourceManager.vbom);
-        textLevel4.setScale(1.4f);
-        attachChild(textLevel4);
-
-        pY = 100;
-        float icon_width = 64;
+        pY = 110;
+        float icon_width = 80;
         float padding = 10;
-        pX = ((SCREEN_WIDTH - ((icon_width + padding) * 5)) / 2) + (icon_width / 2);
+        pX = ((SCREEN_WIDTH - ((icon_width + padding) * 4)) / 2) + (icon_width / 2);
 
         TiledSprite music = new TiledSprite(pX, pY, icon_width, icon_width, mResourceManager.musicTextureRegion, mResourceManager.vbom) {
 
@@ -188,23 +197,32 @@ public class MainMenuScene extends BaseScene {
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 switch (pSceneTouchEvent.getAction()) {
                     case TouchEvent.ACTION_UP: {
-                        Utils.clickUpEffect(this);
-                        if(mActivity.isSound()) {
-                            setCurrentTileIndex(1);
-                            mActivity.setSound(false);
+                        IEntityModifier iem = Utils.clickEffect(this);
+                        iem.addModifierListener(new IEntityModifier.IEntityModifierListener() {
+                            @Override
+                            public void onModifierStarted(IModifier<IEntity> pModifier, IEntity pItem) {}
 
-                        }else {
-                            setCurrentTileIndex(0);
-                            mActivity.setSound(true);
-                            mResourceManager.mActivity.playSound(mResourceManager.soundClick);
-                        }
+                            @Override
+                            public void onModifierFinished(IModifier<IEntity> pModifier, IEntity pItem) {
+                                if(mActivity.isSound()) {
+                                    setCurrentTileIndex(1);
+                                    mActivity.setSound(false);
+
+                                }else {
+                                    setCurrentTileIndex(0);
+                                    mActivity.setSound(true);
+                                    mResourceManager.mActivity.playSound(mResourceManager.soundClick);
+                                }
+                            }
+                        });
+
                         return true;
                     }
                     case TouchEvent.ACTION_DOWN: {
-                        Utils.clickDownEffect(this);
+
                     }
-                    default: {
-                        return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
+                    default:{
+                        return false;
                     }
 
                 }
@@ -225,22 +243,41 @@ public class MainMenuScene extends BaseScene {
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 switch (pSceneTouchEvent.getAction()) {
-                    case TouchEvent.ACTION_DOWN: {
-                        Utils.clickUpEffect(this);
-                        mResourceManager.mActivity.playSound(mResourceManager.soundClick);
-                        Utils.clickDownEffect(this);
+                    case TouchEvent.ACTION_UP: {
+                        IEntityModifier iem = Utils.clickEffect(this);
+                        iem.addModifierListener(new IEntityModifier.IEntityModifierListener() {
+                            @Override
+                            public void onModifierStarted(IModifier<IEntity> pModifier, IEntity pItem) {}
 
-                        if(mActivity.getGameHelper().isSignedIn()) {
-                            final Intent showTheBestIntent = Games.Leaderboards.getAllLeaderboardsIntent(mActivity.getApiClient());
-                            mActivity.startActivityForResult(showTheBestIntent, REQUEST_THE_BEST_LEADERBOARD);
-                        }else {
-                            mActivity.getGameHelper().reconnectClient();
-                        }
+                            @Override
+                            public void onModifierFinished(IModifier<IEntity> pModifier, IEntity pItem) {
+                                if(mActivity.getGameHelper().isSignedIn()) {
+                                    int leaderboard_id = mActivity.getResources().getIdentifier("leaderboard2","string",
+                                            mActivity.getPackageName());
+                                    String leaderboard_string = mActivity.getString(leaderboard_id);
+                                    Intent showTheBestIntent = Games.Leaderboards.getLeaderboardIntent(mActivity.getApiClient(), leaderboard_string);
+                                    mActivity.startActivityForResult(showTheBestIntent, REQUEST_THE_BEST_LEADERBOARD);
+                                }else {
+                                    mActivity.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            CharSequence text = mActivity.getString(R.string.gamehelper_sign_in_failed);
+                                            int duration = Toast.LENGTH_LONG;
+                                            Toast.makeText(mActivity.getApplicationContext(), text, duration).show();
+                                        }
+                                    });
+                                }
+
+                            }
+                        });
 
                         return true;
                     }
-                    default: {
-                        return true;//super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
+                    case TouchEvent.ACTION_DOWN: {
+                        mResourceManager.mActivity.playSound(mResourceManager.soundClick);
+                    }
+                    default:{
+                        return false;
                     }
                 }
             }
@@ -253,22 +290,37 @@ public class MainMenuScene extends BaseScene {
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 switch (pSceneTouchEvent.getAction()) {
-                    case TouchEvent.ACTION_DOWN: {
-                        Utils.clickUpEffect(this);
-                        mResourceManager.mActivity.playSound(mResourceManager.soundClick);
-                        Utils.clickDownEffect(this);
+                    case TouchEvent.ACTION_UP: {
+                        IEntityModifier iem = Utils.clickEffect(this);
+                        iem.addModifierListener(new IEntityModifier.IEntityModifierListener() {
+                            @Override
+                            public void onModifierStarted(IModifier<IEntity> pModifier, IEntity pItem) {}
 
-                        if(mActivity.getGameHelper().isSignedIn()) {
-                            final Intent showAchievementIntent = Games.Achievements.getAchievementsIntent(mActivity.getApiClient());
-                            mActivity.startActivityForResult(showAchievementIntent, REQUEST_ALL_ACHIEVEMENT);
-                        }else {
-                            mActivity.getGameHelper().beginUserInitiatedSignIn();
-                        }
+                            @Override
+                            public void onModifierFinished(IModifier<IEntity> pModifier, IEntity pItem) {
+                                if(mActivity.getGameHelper().isSignedIn()) {
+                                    final Intent showAchievementIntent = Games.Achievements.getAchievementsIntent(mActivity.getApiClient());
+                                    mActivity.startActivityForResult(showAchievementIntent, REQUEST_ALL_ACHIEVEMENT);
+                                }else {
+                                    mActivity.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            CharSequence text = mActivity.getString(R.string.gamehelper_sign_in_failed);
+                                            int duration = Toast.LENGTH_LONG;
+                                            Toast.makeText(mActivity.getApplicationContext(), text, duration).show();
+                                        }
+                                    });
+                                }
+                            }
+                        });
 
                         return true;
                     }
-                    default: {
-                        return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
+                    case TouchEvent.ACTION_DOWN: {
+                        mResourceManager.mActivity.playSound(mResourceManager.soundClick);
+                    }
+                    default:{
+                        return false;
                     }
                 }
             }
@@ -281,142 +333,45 @@ public class MainMenuScene extends BaseScene {
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 switch (pSceneTouchEvent.getAction()) {
-                    case TouchEvent.ACTION_DOWN: {
-                        Utils.clickUpEffect(this);
-                        mResourceManager.mActivity.playSound(mResourceManager.soundClick);
-                        Utils.clickDownEffect(this);
-                        Intent sendIntent = new Intent();
-                        sendIntent.setAction(Intent.ACTION_SEND);
-                        sendIntent.putExtra(Intent.EXTRA_SUBJECT,mActivity.getString(R.string.share_extra_subject));
-                        sendIntent.putExtra(Intent.EXTRA_TEXT, mActivity.getString(R.string.shate_extra_text));
-                        sendIntent.setType("text/plain");
-                        mActivity.startActivity(Intent.createChooser(sendIntent, mActivity.getString(R.string.share_chooser_text)));
+                    case TouchEvent.ACTION_UP: {
+                        IEntityModifier iem = Utils.clickEffect(this);
+                        iem.addModifierListener(new IEntityModifier.IEntityModifierListener() {
+                            @Override
+                            public void onModifierStarted(IModifier<IEntity> pModifier, IEntity pItem) {}
+
+                            @Override
+                            public void onModifierFinished(IModifier<IEntity> pModifier, IEntity pItem) {
+                                /*
+                                Intent sendIntent = new Intent();
+                                sendIntent.setAction(Intent.ACTION_SEND);
+                                sendIntent.putExtra(Intent.EXTRA_SUBJECT,mActivity.getString(R.string.share_extra_subject));
+                                sendIntent.putExtra(Intent.EXTRA_TEXT, mActivity.getString(R.string.shate_extra_text));
+                                sendIntent.setType("text/plain");
+                                mActivity.startActivity(Intent.createChooser(sendIntent, mActivity.getString(R.string.share_chooser_text)));
+                                */
+                                Intent intent = new AppInviteInvitation.IntentBuilder(mActivity.getString(R.string.invitation_title))
+                                        .setMessage(mActivity.getString(R.string.invitation_message))
+                                        .setDeepLink(Uri.parse(mActivity.getString(R.string.invitation_deep_link)))
+                                        .setCustomImage(Uri.parse(mActivity.getString(R.string.invitation_custom_image)))
+                                        .setCallToActionText(mActivity.getString(R.string.invitation_cta))
+                                        .build();
+                                mActivity.startActivityForResult(intent, REQUEST_INVITE);
+                            }
+                        });
 
                         return true;
                     }
-                    default: {
-                        return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
+                    case TouchEvent.ACTION_DOWN: {
+                        mResourceManager.mActivity.playSound(mResourceManager.soundClick);
+                    }
+                    default:{
+                        return false;
                     }
                 }
             }
         };
         attachChild(sharing);
         registerTouchArea(sharing);
-
-        pX = pX + icon_width + padding;
-        final float finalPX = pX;
-        final float finalPY = pY;
-
-        final Sprite stats = new Sprite(pX, pY, 40, 40, mResourceManager.statsTextureRegion, mResourceManager.vbom ){
-            @Override
-            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-                switch (pSceneTouchEvent.getAction()) {
-                    case TouchEvent.ACTION_UP: {
-                        mResourceManager.mActivity.playSound(mResourceManager.soundClick);
-
-                        setChildScene(mStatsBoardScene.getmStatsBoardScene(),false,false, true);
-                        return true;
-                    }
-                    default: {
-                        return true;
-                    }
-                }
-            }
-        };
-        attachChild(stats);
-        //registerTouchArea(stats);
-
-        final Sprite rate = new Sprite(pX, pY, 40, 40, mResourceManager.rateTextureRegion, mResourceManager.vbom ){
-            @Override
-            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-                switch (pSceneTouchEvent.getAction()) {
-                    case TouchEvent.ACTION_UP: {
-                        mResourceManager.mActivity.playSound(mResourceManager.soundClick);
-                        final String appPackageName = mActivity.getPackageName(); // getPackageName() from Context or Activity  object
-                        try {
-                            mActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-                        } catch (android.content.ActivityNotFoundException anfe) {
-                            mActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
-                            //mActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + appPackageName)));
-                        }
-
-                        return true;
-                    }
-                    default: {
-                        return true;
-                        //return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
-                    }
-                }
-            }
-        };
-        attachChild(rate);
-        //rate.setZIndex(-1);
-        //registerTouchArea(rate);
-
-        final Sprite rules = new Sprite(pX, pY, 40, 40, mResourceManager.rulesTextureRegion, mResourceManager.vbom ){
-            @Override
-            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-                switch (pSceneTouchEvent.getAction()) {
-                    case TouchEvent.ACTION_UP: {
-                        mResourceManager.mActivity.playSound(mResourceManager.soundClick);
-                        setChildScene(mRulesBoardScene.getmRulesBoardScene(),false,false, true);
-                        return true;
-                    }
-                    default: {
-                        return true;
-                        //return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
-                    }
-                }
-            }
-        };
-        attachChild(rules);
-        //rules.setZIndex(-1);
-        //registerTouchArea(rules);
-
-
-        Sprite info = new Sprite(pX, pY, icon_width, icon_width, mResourceManager.infoTextureRegion, mResourceManager.vbom ){
-            boolean subMenuVisible = false;
-            @Override
-            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-                switch (pSceneTouchEvent.getAction()) {
-                    case TouchEvent.ACTION_UP: {
-                        Utils.clickUpEffect(this);
-                        mResourceManager.mActivity.playSound(mResourceManager.soundClick);
-                        if (subMenuVisible){
-                            Utils.fadeOutMenu(stats, finalPX, finalPY);
-                            Utils.fadeOutMenu(rate, finalPX, finalPY);
-                            Utils.fadeOutMenu(rules, finalPX, finalPY);
-                            unregisterTouchArea(stats);
-                            unregisterTouchArea(rate);
-                            unregisterTouchArea(rules);
-                            subMenuVisible = false;
-                        }else{
-                            Utils.fadeInMenu(stats, finalPX, finalPY + 55);
-                            Utils.fadeInMenu(rate, finalPX + 55, finalPY);
-                            Utils.fadeInMenu(rules, finalPX + 45, finalPY + 45);
-                            registerTouchArea(stats);
-                            registerTouchArea(rate);
-                            registerTouchArea(rules);
-                            subMenuVisible = true;
-                        }
-                        return true;
-                    }
-                    case TouchEvent.ACTION_DOWN: {
-                        Utils.clickDownEffect(this);
-                        return true;
-                    }
-                    default: {
-                        return true;
-                        //return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
-                    }
-                }
-            }
-        };
-        attachChild(info);
-        //info.setZIndex(2);
-        registerTouchArea(info);
-        info.
-        sortChildren();
 
         fadeIn();
 
@@ -432,4 +387,21 @@ public class MainMenuScene extends BaseScene {
 
     @Override
     public void disposeScene() {}
+
+    private void startQuickGame() {
+        // quick-start a game with 1 randomly selected opponent
+        final int MIN_OPPONENTS = 1, MAX_OPPONENTS = 1;
+        Bundle autoMatchCriteria = RoomConfig.createAutoMatchCriteria(MIN_OPPONENTS,
+                MAX_OPPONENTS, 0);
+        /*
+        RoomConfig.Builder rtmConfigBuilder = RoomConfig.builder(mActivity);
+        rtmConfigBuilder.setMessageReceivedListener(mActivity);
+        rtmConfigBuilder.setRoomStatusUpdateListener(mActivity);
+        rtmConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
+        //switchToScreen(R.id.screen_wait);
+        Utils.keepScreenOn();
+        //resetGameVars();
+        Games.RealTimeMultiplayer.create(mActivity.getApiClient(), rtmConfigBuilder.build());
+       */
+    }
 }

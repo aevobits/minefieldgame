@@ -1,6 +1,7 @@
 package com.aevobits.games.minesfield.scene;
 
-import com.aevobits.games.minesfield.ResourceManager;
+import com.aevobits.games.minesfield.manager.ResourceManager;
+import com.aevobits.games.minesfield.entity.LevelMap;
 import com.aevobits.games.minesfield.entity.Tile;
 
 import org.andengine.entity.text.Text;
@@ -16,6 +17,7 @@ public class MapManager {
     public final static MapManager INSTANCE = new MapManager();
 
     private ResourceManager res = ResourceManager.getInstance();
+    public LevelMap levels[][];
     public int map[][];
     public char mapMarks[][];
     public boolean bombsMap[][];
@@ -40,22 +42,20 @@ public class MapManager {
 
     public static MapManager getInstance(){return INSTANCE;}
 
-    public void create(int rows, int cols, int bombs, float pXInit, float pYInit, GameScene gameScene){
-
-        this.map = new int[rows][cols];
-        this.bombsMap = new boolean[rows][cols];
-        this.shownMap = new boolean[rows][cols];
-        this.flagMap = new boolean[rows][cols];
-        this.bombs = bombs;
-        this.rows = rows;
-        this.cols = cols;
-        this.pXInit = pXInit;
-        this.pYInit = pYInit;
-        this.flagsBombs = bombs;
+    public void create(GameScene gameScene){
+        generateLevels();
+        this.bombs = levels[(this.level-1)/4][((this.level-1) % 4)].getBombs();
+        this.rows = levels[(this.level-1)/4][((this.level-1) % 4)].getRows();
+        this.cols = levels[(this.level-1)/4][((this.level-1) % 4)].getCols();
+        this.map = new int[this.rows][this.cols];
+        this.bombsMap = new boolean[this.rows][this.cols];
+        this.shownMap = new boolean[this.rows][this.cols];
+        this.flagMap = new boolean[this.rows][this.cols];
+        this.flagsBombs = this.bombs;
         this.seconds = 0;
         this.newScore = 0;
         this.gameScene = gameScene;
-        this.mapMarks = new char[rows][cols];
+        this.mapMarks = new char[this.rows][this.cols];
 
         for (char[] row:this.mapMarks){
             Arrays.fill(row, 'N');
@@ -64,13 +64,43 @@ public class MapManager {
         generateMap();
     }
 
+    private void generateLevels(){
+        int bombs = 10;
+        int rows = 10;
+        int cols = 10;
+        this.levels = new LevelMap[4][4];
+        for (int i=0;i<4;i++){
+            for (int j=0;j<4;j++){
+                this.levels[i][j] = new LevelMap(rows, cols, bombs);
+                if (i<2) {
+                    bombs += 2;
+                }else{
+                    bombs+=4;
+                }
+                if (((i + j) % 2) == 1){
+                    if (rows < 15){
+                        if ((rows == 12) && (cols == 10)){
+                            cols += 1;
+                        }else if ((rows == 13) && (cols == 11)) {
+                            cols += 1;
+                        }else {
+                            rows += 1;
+                        }
+                    }else {
+                        cols += 1;
+                    }
+                }
+            }
+        }
+    }
+
     private void generateMap(){
 
-        int mines = bombs;
+        int mines = this.bombs;
 
         while(mines > 0) {
-            int randX = (int) (Math.random() * rows);
-            int randY = (int) (Math.random() * cols);
+            int randX = (int) (Math.random() * this.rows);
+            int randY = (int) (Math.random() * this.cols);
 
             if (!bombsMap[randX][randY]) {
                 if (isIn(randX - 1, randY - 1))
@@ -106,10 +136,10 @@ public class MapManager {
 
     private boolean isIn(int row, int col)
     {
-        return (row >= 0 && row < rows && col >= 0 && col < cols);
+        return (row >= 0 && row < this.rows && col >= 0 && col < this.cols);
     }
 
-    public void freeTiles(int row, int col, float pX, float pY, float width, float height, int flagsBombs, Text mHudText){
+    public void freeTiles(int row, int col, float pX, float pY, float width, float height, Text mHudText){
 
         if(isIn(row, col))
         {
@@ -132,7 +162,7 @@ public class MapManager {
                     {
                         for(int c = -1; c <= 1; c++)
                         {
-                            freeTiles(row + r, col + c, pX + (c * width), pY - (r * height), width, height, flagsBombs, mHudText);
+                            freeTiles(row + r, col + c, pX + (c * width), pY - (r * height), width, height, mHudText);
                         }
                     }
                 }
@@ -186,8 +216,6 @@ public class MapManager {
         }
         Tile tile = new Tile(pX, pY, row, col, width, height, textureRegion, res.mActivity.getVertexBufferObjectManager());
         this.gameScene.attachChild(tile);
-        //res.mActivity.playSound(res.soundFlip);
-
     }
 
     public void switchBomb(int row, int col, float pX, float pY, final float width, final float height){
@@ -195,13 +223,18 @@ public class MapManager {
         this.gameScene.attachChild(tile);
     }
 
-    public void switchBombs(final float width, final float height){
+    public void switchBombs(final float width, final float height, int row, int col){
         float tmpY = this.pYInit;
         for (int i = 1; i <= this.rows; i++){
             float tmpX = this.pXInit;
             for (int j = 1; j <= this.cols; j++) {
                 if(this.bombsMap[i-1][j-1]){
-                    Tile tile = new Tile(tmpX, tmpY, i, j, width, height, res.bombTileTextureRegion, res.mActivity.getVertexBufferObjectManager());
+                    Tile tile;
+                    if (((i - 1) == row) && ((j - 1) == col)){
+                        tile = new Tile(tmpX, tmpY, i, j, width, height, res.bombLoseTileTextureRegion, res.mActivity.getVertexBufferObjectManager());
+                    }else{
+                        tile = new Tile(tmpX, tmpY, i, j, width, height, res.bombTileTextureRegion, res.mActivity.getVertexBufferObjectManager());
+                    }
                     this.gameScene.attachChild(tile);
                 }
 
@@ -227,16 +260,16 @@ public class MapManager {
     {
         int nb = 0;
 
-        for(int i = 0; i < rows; i++)
+        for(int i = 0; i < this.rows; i++)
         {
-            for(int j = 0; j < cols; j++)
+            for(int j = 0; j < this.cols; j++)
             {
                 if(shownMap[i][j])
                     nb++;
             }
         }
 
-        int freeTile = (rows*cols - bombs);
+        int freeTile = (this.rows*this.cols - this.bombs);
         boolean won = false;
 
         if(nb == freeTile){
